@@ -32,3 +32,11 @@ def lcd_print_time(callback_var):
 
 display_clock_timer = Timer(-1)
 display_clock_timer.init(period=1000, mode=Timer.PERIODIC, callback=lcd_print_time)
+
+
+def update_schedules():
+    from sys import modules
+
+    del modules["schedules"]
+    del radiator_schedule
+    from schedules import radiator_schedule
