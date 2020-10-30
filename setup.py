@@ -1,8 +1,11 @@
-from time import sleep_us
+from time import sleep_ms, sleep_us
 
+import ds18x20
 import ntptime
+import onewire
 from esp32_gpio_lcd import GpioLcd
 from machine import PWM, RTC, Pin, Timer
+
 from secret import wifi_PSK, wifi_SSID
 
 relay = Pin(16, Pin.OUT)
@@ -73,3 +76,16 @@ sync_clock(None)
 
 clock_timer = Timer(-1)
 clock_timer.init(period=15 * 60 * 1000, mode=Timer.PERIODIC, callback=sync_clock)
+
+
+ow = onewire.OneWire(Pin(3))
+ds = ds18x20.DS18X20(ow)
+
+
+def read_temp():
+    global roms
+    if not roms:
+        roms = ds.scan()
+    ds.convert_temp()
+    sleep_ms(750)
+    return ds.read_temp(roms[0])
