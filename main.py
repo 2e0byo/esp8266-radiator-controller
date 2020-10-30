@@ -1,7 +1,18 @@
-from machine import Timer
+from time import sleep
+
+from machine import Pin, Timer
 
 from schedules import radiator_schedule
-from setup import backlight_off, backlight_on, do_connect, init_lcd, relay, rtc
+from setup import (
+    backlight_off,
+    backlight_on,
+    do_connect,
+    ds,
+    init_lcd,
+    read_temp,
+    relay,
+    rtc,
+)
 
 # setup
 do_connect()
@@ -17,8 +28,11 @@ def automate(now):
         if today in schedule["days"]:
             if schedule["on"] == time and not relay.value():
                 relay.on()
+                status.append("Warming")
             elif schedule["off"] == time and relay.value():
-                relay.off()
+                status.remove("Warming")
+                if not status:
+                    relay.off()
 
 
 def lcd_print_time(callback_var):
@@ -40,3 +54,27 @@ def update_schedules():
     del modules["schedules"]
     del radiator_schedule
     from schedules import radiator_schedule
+
+
+def thermostat(setpoint, hysteresis=1):
+    """Try to use radiator as simple thermostat to keep room at constant temperature."""
+    while True:
+        _printed = False
+        while read_temp() >= setpoint:
+            if not _printed:
+                print("Waiting for room to become cold enough")
+                _printed = True
+            sleep(60)
+        _printed = False
+        while read_temp() < setpoint + hysteresis:
+            if not _printed:
+                print("Turning heating on")
+                _printed = True
+                status.append("Heating")
+                relay.on()
+            sleep(60)
+
+        status.remove("Heating")
+        print("Status:", status)
+        if not status:
+            relay.off()
