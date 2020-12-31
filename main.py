@@ -1,5 +1,6 @@
 from time import sleep
 
+import uasyncio as asyncio
 from machine import Pin, Timer
 
 from schedules import radiator_schedule
@@ -7,7 +8,6 @@ from setup import (
     backlight_off,
     backlight_on,
     do_connect,
-    ds,
     init_lcd,
     read_temp,
     relay,
@@ -19,6 +19,8 @@ do_connect()
 lcd = init_lcd()
 
 days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+status = []
 
 
 def automate(now):
@@ -46,6 +48,7 @@ def lcd_print_time(callback_var):
 
 display_clock_timer = Timer(-1)
 display_clock_timer.init(period=1000, mode=Timer.PERIODIC, callback=lcd_print_time)
+backlight_off()
 
 
 def update_schedules():
@@ -64,7 +67,7 @@ def thermostat(setpoint, hysteresis=1):
             if not _printed:
                 print("Waiting for room to become cold enough")
                 _printed = True
-            sleep(60)
+            await asyncio.sleep(60)
         _printed = False
         while read_temp() < setpoint + hysteresis:
             if not _printed:

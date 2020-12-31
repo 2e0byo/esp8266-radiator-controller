@@ -16,7 +16,7 @@ rs = Pin(5, Pin.OUT)
 e = Pin(13, Pin.OUT)
 d4 = Pin(12, Pin.OUT)
 d5 = Pin(14, Pin.OUT)
-d6 = Pin(2, Pin.OUT)
+d6 = Pin(1, Pin.OUT)
 d7 = Pin(0, Pin.OUT)
 a = Pin(4, Pin.OUT)
 
@@ -27,6 +27,9 @@ Contrast.duty(contrast)
 
 Backlight = PWM(a)
 backlight_brightness = 1023
+
+# turn off wifi led
+# led = Pin(2, Pin.IN)
 
 
 def do_connect():
@@ -72,7 +75,10 @@ def sync_clock(callback_var):
     rtc.datetime()
 
 
-sync_clock(None)
+try:
+    sync_clock(None)
+except OSError:
+    pass
 
 clock_timer = Timer(-1)
 clock_timer.init(period=15 * 60 * 1000, mode=Timer.PERIODIC, callback=sync_clock)
@@ -80,6 +86,7 @@ clock_timer.init(period=15 * 60 * 1000, mode=Timer.PERIODIC, callback=sync_clock
 
 ow = onewire.OneWire(Pin(3))
 ds = ds18x20.DS18X20(ow)
+roms = None
 
 
 def read_temp():
