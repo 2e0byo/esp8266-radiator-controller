@@ -8,7 +8,7 @@ import sound
 from config import config
 from primitives.pushbutton import Pushbutton
 
-button = Pushbutton(Pin(2, Pin.IN))
+button = Pushbutton(Pin(2, Pin.IN), suppress=True)
 
 SERVER = "voyage.lan"
 
