@@ -35,7 +35,8 @@ def ring(reason):
 
 def stop_alarm():
     print("Stopping alarm")
-    sound.sound = False
+    if sound.sounding:
+        sound.sound = False
 
 
 button.double_func(
@@ -53,7 +54,6 @@ async def conn_han(client):
 async def main(client):
     await client.connect()
     while True:
-        print(last_timestamp)
         # timeout
         if last_timestamp and (time() - last_timestamp > 80):
             ring("timeout")

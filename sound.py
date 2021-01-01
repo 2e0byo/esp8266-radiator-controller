@@ -5,9 +5,12 @@ buzzer = PWM(Pin(12))
 buzzer.duty(0)
 
 sound = True
+sounding = False
 
 
 async def siren():
+    global sounding, sound
+    sounding = True
     buzzer.duty(512)
     while sound:
         buzzer.freq(440)
@@ -15,9 +18,13 @@ async def siren():
         buzzer.freq(600)
         await asyncio.sleep(0.5)
     buzzer.duty(0)
+    sound = True
+    sounding = False
 
 
 def ring():
+    global sounding, sound
+    sounding = True
     buzzer.freq(600)
     while sound:
         for i in range(2):
@@ -28,3 +35,5 @@ def ring():
         await asyncio.sleep(0.4)
 
     buzzer.duty(0)
+    sound = True
+    sounding = False
