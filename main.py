@@ -17,9 +17,12 @@ last_timestamp = None
 
 def callback(topic, msg, retained):
     """Callback for messages."""
+    global last_timestamp
     print(topic, msg, retained)
     if "sound" in msg.decode():
         ring("alarm")
+    if "keepalive" in msg.decode():
+        last_timestamp = time()
 
 
 def ring(reason):
