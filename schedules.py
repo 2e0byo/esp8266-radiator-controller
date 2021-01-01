@@ -7,3 +7,12 @@ radiator_schedule = [
         "off": (0, 0),
     },
 ]
+
+thermostat_schedule = [
+    {
+        "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+        "on": (22, 00),
+        "off": (9, 30),
+        "setpoint": 20,
+    },
+]
