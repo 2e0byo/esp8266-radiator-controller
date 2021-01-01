@@ -1,11 +1,12 @@
 import uasyncio as asyncio
 from machine import Pin
 from mqtt_as import MQTTClient
-from pusbutton import Pushbutton
 from utime import time
 
+import radiator
 import sound
 from config import config
+from primitives.pushbutton import Pushbutton
 
 button = Pushbutton(Pin(2, Pin.IN))
 
@@ -30,6 +31,14 @@ def ring(reason):
 
 def stop_alarm():
     sound.sound = False
+
+
+button.double_func(
+    stop_alarm,
+)
+button.press_func(
+    radiator.toggle_pulse_radiator,
+)
 
 
 async def conn_han(client):

@@ -1,69 +1,68 @@
-from time import sleep
-
 import uasyncio as asyncio
-from machine import Pin, Timer
+from machine import Pin
+from mqtt_as import MQTTClient
+from utime import time
 
-from schedules import radiator_schedule
-from setup import do_connect, read_temp, relay, rtc
+import radiator
+import sound
+from config import config
+from primitives.pushbutton import Pushbutton
 
-# setup
-do_connect()
+button = Pushbutton(Pin(2, Pin.IN))
 
-days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+SERVER = "voyage.lan"
 
-status = []
-
-
-def automate(now):
-    today = days[now[3]]
-    time = now[4:6]
-    for schedule in radiator_schedule:
-        if today in schedule["days"]:
-            if schedule["on"] == time and not relay.value():
-                relay.on()
-                status.append("Warming")
-            elif schedule["off"] == time and relay.value():
-                status.remove("Warming")
-                if not status:
-                    relay.off()
+last_timestamp = None
 
 
-def lcd_print_time(callback_var):
-    datetime = rtc.datetime()
-    automate(datetime)
+def callback(topic, msg, retained):
+    """Callback for messages."""
+    print(topic, msg, retained)
+    if "sound" in msg.decode():
+        ring("alarm")
 
 
-display_clock_timer = Timer(-1)
-display_clock_timer.init(period=1000, mode=Timer.PERIODIC, callback=lcd_print_time)
+def ring(reason):
+    if "timeout" in reason:
+        print("sounding")
+        asyncio.get_event_loop().create_task(sound.ring())
+    else:
+        asyncio.get_event_loop().create_task(sound.siren())
 
 
-def update_schedules():
-    from sys import modules
-
-    del modules["schedules"]
-    global radiator_schedule
-    from schedules import radiator_schedule
+def stop_alarm():
+    sound.sound = False
 
 
-def thermostat(setpoint, hysteresis=1):
-    """Try to use radiator as simple thermostat to keep room at constant temperature."""
+button.double_func(
+    stop_alarm,
+)
+button.press_func(
+    radiator.toggle_pulse_radiator,
+)
+
+
+async def conn_han(client):
+    await client.subscribe("motorcyle_alarm", 1)
+
+
+async def main(client):
+    await client.connect()
     while True:
-        _printed = False
-        while read_temp() >= setpoint:
-            if not _printed:
-                print("Waiting for room to become cold enough")
-                _printed = True
-            await asyncio.sleep(60)
-        _printed = False
-        while read_temp() < setpoint + hysteresis:
-            if not _printed:
-                print("Turning heating on")
-                _printed = True
-                status.append("Heating")
-                relay.on()
-            sleep(60)
+        # timeout
+        if last_timestamp and (time() - last_timestamp > 120):
+            await sound("timeout")
+        await asyncio.sleep(10)
 
-        status.remove("Heating")
-        print("Status:", status)
-        if not status:
-            relay.off()
+
+config["subs_cb"] = callback
+config["connect_coro"] = conn_han
+config["server"] = SERVER
+
+MQTTClient.DEBUG = True  # Optional: print diagnostic messages
+client = MQTTClient(config)
+loop = asyncio.get_event_loop()
+try:
+    loop.run_until_complete(main(client))
+finally:
+    client.close()  # Prevent LmacRxBlk:1 errors
