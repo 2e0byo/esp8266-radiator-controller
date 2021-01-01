@@ -53,9 +53,10 @@ async def conn_han(client):
 async def main(client):
     await client.connect()
     while True:
+        print(last_timestamp)
         # timeout
-        if last_timestamp and (time() - last_timestamp > 120):
-            await sound("timeout")
+        if last_timestamp and (time() - last_timestamp > 80):
+            ring("timeout")
         await asyncio.sleep(10)
 
 
