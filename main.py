@@ -31,6 +31,7 @@ def ring(reason):
 
 
 def stop_alarm():
+    print("Stopping alarm")
     sound.sound = False
 
 
@@ -43,7 +44,7 @@ button.press_func(
 
 
 async def conn_han(client):
-    await client.subscribe("motorcyle_alarm", 1)
+    await client.subscribe("motorcycle_alarm", 1)
 
 
 async def main(client):

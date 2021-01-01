@@ -13,7 +13,7 @@ async def siren():
         buzzer.freq(440)
         await asyncio.sleep(0.5)
         buzzer.freq(600)
-        await asncio.sleep(0.5)
+        await asyncio.sleep(0.5)
     buzzer.duty(0)
 
 
