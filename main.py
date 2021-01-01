@@ -4,19 +4,10 @@ import uasyncio as asyncio
 from machine import Pin, Timer
 
 from schedules import radiator_schedule
-from setup import (
-    backlight_off,
-    backlight_on,
-    do_connect,
-    init_lcd,
-    read_temp,
-    relay,
-    rtc,
-)
+from setup import do_connect, read_temp, relay, rtc
 
 # setup
 do_connect()
-lcd = init_lcd()
 
 days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
@@ -38,24 +29,19 @@ def automate(now):
 
 
 def lcd_print_time(callback_var):
-    lcd.move_to(0, 0)
     datetime = rtc.datetime()
-    date = "%02i-%02i" % datetime[1:3]
-    time = "%02i:%02i:%02i" % datetime[4:7]
-    lcd.putstr(date + " " + time)
     automate(datetime)
 
 
 display_clock_timer = Timer(-1)
 display_clock_timer.init(period=1000, mode=Timer.PERIODIC, callback=lcd_print_time)
-backlight_off()
 
 
 def update_schedules():
     from sys import modules
 
     del modules["schedules"]
-    del radiator_schedule
+    global radiator_schedule
     from schedules import radiator_schedule
 
 

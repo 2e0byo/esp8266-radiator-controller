@@ -1,32 +1,46 @@
-from time import sleep_ms, sleep_us
+from time import sleep_ms
 
 import ds18x20
 import ntptime
 import onewire
-from esp32_gpio_lcd import GpioLcd
 from machine import PWM, RTC, Pin, Timer
 
 from secret import wifi_PSK, wifi_SSID
 
-relay = Pin(16, Pin.OUT)
+relay = Pin(0, Pin.OUT)
 relay.off()
 
-vo = Pin(15, Pin.OUT)
-rs = Pin(5, Pin.OUT)
-e = Pin(13, Pin.OUT)
-d4 = Pin(12, Pin.OUT)
-d5 = Pin(14, Pin.OUT)
-d6 = Pin(1, Pin.OUT)
-d7 = Pin(0, Pin.OUT)
-a = Pin(4, Pin.OUT)
 
-Contrast = PWM(vo)
-Contrast.freq(1000)
-contrast = 512
-Contrast.duty(contrast)
+led1 = Pin(16, Pin.OUT)
+led2 = Pin(5, Pin.OUT)
+led = PWM(led2)
 
-Backlight = PWM(a)
-backlight_brightness = 1023
+duties = {"red": 0, "green": 0}
+colour = "red"
+
+
+def led_colour(col: str):
+    global led, led1, colour, duties
+    if col == "green":
+        led1.off()
+        led.duty(duties[col])
+        colour = "green"
+    elif col == "red":
+        led1.on()
+        led.duty(1023 - duties[col])
+        colour = "red"
+
+
+led_colour("red")
+
+
+def led_brightness(br):
+    if colour == "red":
+        led.duty(1023 - br)
+    else:
+        led.duty(br)
+    duties["colour"] = br
+
 
 # turn off wifi led
 # led = Pin(2, Pin.IN)
@@ -44,26 +58,6 @@ def do_connect():
         while not wlan.isconnected():
             pass
     print("network config:", wlan.ifconfig())
-
-
-def backlight_on():
-    for i in range(backlight_brightness):
-        Backlight.duty(i)
-        sleep_us(500)
-
-
-def backlight_off():
-    for i in range(Backlight.duty()):
-        Backlight.duty(Backlight.duty() - 1)
-        sleep_us(500)
-
-
-def init_lcd():
-    backlight_on()
-    lcd = GpioLcd(rs, e, d4, d5, d6, d7)
-    lcd.clear()
-    lcd.putstr("Net Thermostat")
-    return lcd
 
 
 rtc = RTC()
@@ -84,7 +78,7 @@ clock_timer = Timer(-1)
 clock_timer.init(period=15 * 60 * 1000, mode=Timer.PERIODIC, callback=sync_clock)
 
 
-ow = onewire.OneWire(Pin(3))
+ow = onewire.OneWire(Pin(0))
 ds = ds18x20.DS18X20(ow)
 roms = None
 
