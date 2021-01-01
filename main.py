@@ -46,6 +46,10 @@ button.press_func(
     radiator.toggle_pulse_radiator,
 )
 
+button.long_func(
+    radiator.toggle_thermostat,
+)
+
 
 async def conn_han(client):
     await client.subscribe("motorcycle_alarm", 1)
