@@ -38,8 +38,10 @@ def led_brightness(br):
     duties["colour"] = br
 
 
-async def flash(colour):
+async def flash(colour, duration):
     led_colour(colour)
     for step in range(100):
         led_brightness(round(sin(pi * step / 100) * 1023))
-        await asyncio.sleep(0.01)
+        await asyncio.sleep(duration / 100)
+
+    led_brightness(0)
