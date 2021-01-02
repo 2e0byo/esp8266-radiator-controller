@@ -58,13 +58,15 @@ async def thermostat(setpoint, hysteresis=1):
     global status
     while "Thermostat" in status:
         _printed = False
-        while read_temp() >= setpoint:
+        temp = await read_temp()
+        while temp >= setpoint:
             if not _printed:
                 print("Waiting for room to become cold enough")
                 _printed = True
             await asyncio.sleep(60)
         _printed = False
-        while read_temp() < setpoint + hysteresis:
+        temp = await read_temp()
+        while temp < setpoint + hysteresis:
             if not _printed:
                 print("Turning heating on")
                 _printed = True
@@ -76,7 +78,7 @@ async def thermostat(setpoint, hysteresis=1):
         print("Status:", status)
 
 
-ow = onewire.OneWire(Pin(0))
+ow = onewire.OneWire(Pin(13))
 ds = ds18x20.DS18X20(ow)
 roms = None
 
@@ -133,6 +135,7 @@ async def toggle_pulse_radiator():
 def toggle_thermostat():
     global status
     if "Thermostat" not in status:
+        status.append("Thermostat")
         print("starting thermostat")
         asyncio.get_event_loop().create_task(thermostat(20))
     else:
