@@ -1,3 +1,6 @@
+from math import pi, sin
+
+import uasyncio as asyncio
 from machine import PWM, Pin
 
 relay = Pin(0, Pin.OUT)
@@ -33,3 +36,10 @@ def led_brightness(br):
     else:
         led.duty(br)
     duties["colour"] = br
+
+
+async def flash(colour):
+    led_colour(colour)
+    for step in range(100):
+        led_brightness(round(sin(pi * step / 100) * 1023))
+        await asyncio.sleep(0.01)
