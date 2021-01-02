@@ -119,11 +119,33 @@ async def check_schedules():
 async def toggle_pulse_radiator():
     global status
     if not status:
+        print("Starting Manual")
         status = "Manual"
         await asyncio.sleep(60 * 60)
         status.remove("Manual")
+        print("Stopping Manual")
     else:
         status = []
+    asyncio.get_event_loop().create_task(blink_status())
+
+
+def toggle_thermostat():
+    global status
+    if "Thermostat" not in status:
+        print("starting thermostat")
+        asyncio.get_event_loop().create_task(thermostat(20))
+    else:
+        print("stopping thermostat")
+        status.remove("Thermostat")
+
+    asyncio.get_event_loop().create_task(blink_status())
+
+
+async def blink_status():
+    if "Thermostat" in status:
+        await flash("red")
+    if "Warming" in status or "Manual" in status:
+        await flash("green")
 
 
 asyncio.get_event_loop().create_task(relay_control())
