@@ -142,10 +142,15 @@ def toggle_thermostat():
 
 
 async def blink_status():
+    print("Blinking status", status)
     if "Thermostat" in status:
-        await flash("red")
+        await flash("red", 1)
     if "Warming" in status or "Manual" in status:
-        await flash("green")
+        await flash("green", 1)
+
+    elif not status:
+        for i in range(3):
+            await flash("red", 0.2)
 
 
 asyncio.get_event_loop().create_task(relay_control())
