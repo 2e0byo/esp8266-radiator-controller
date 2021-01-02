@@ -68,7 +68,7 @@ async def main(client):
     await client.connect()
     while True:
         # timeout
-        if last_timestamp and (time() - last_timestamp > 80):
+        if last_timestamp and (time() - last_timestamp > 180):
             ring("timeout")
         await asyncio.sleep(10)
 
