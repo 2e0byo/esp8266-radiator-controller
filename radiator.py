@@ -154,7 +154,7 @@ async def blink_status():
 
     elif not status:
         for i in range(3):
-            await flash("red", 0.2)
+            await flash("red", 0.1)
 
 
 asyncio.get_event_loop().create_task(relay_control())
