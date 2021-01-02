@@ -51,7 +51,7 @@ def stop_alarm():
 button.double_func(
     stop_alarm,
 )
-button.press_func(
+button.release_func(
     radiator.toggle_pulse_radiator,
 )
 
