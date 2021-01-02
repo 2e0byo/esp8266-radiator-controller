@@ -143,7 +143,7 @@ def toggle_thermostat():
         asyncio.get_event_loop().create_task(thermostat(20))
     else:
         print("stopping thermostat")
-        thermostat_on = True
+        thermostat_on = False
 
     asyncio.get_event_loop().create_task(blink_status())
 
