@@ -120,13 +120,14 @@ async def toggle_pulse_radiator():
     global status
     if not status:
         print("Starting Manual")
-        status = "Manual"
+        status.append("Manual")
+        asyncio.get_event_loop().create_task(blink_status())
         await asyncio.sleep(60 * 60)
         status.remove("Manual")
         print("Stopping Manual")
     else:
         status = []
-    asyncio.get_event_loop().create_task(blink_status())
+        asyncio.get_event_loop().create_task(blink_status())
 
 
 def toggle_thermostat():
