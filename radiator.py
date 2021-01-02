@@ -4,7 +4,7 @@ import onewire
 import uasyncio as asyncio
 from machine import RTC, Pin
 
-from hal import relay
+from hal import flash, relay
 from schedules import radiator_schedule, thermostat_schedule
 
 days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
