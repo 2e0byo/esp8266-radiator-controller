@@ -14,6 +14,8 @@ SERVER = "voyage.lan"
 
 last_timestamp = None
 
+ringing = False
+
 
 def callback(topic, msg, retained):
     """Callback for messages."""
@@ -26,17 +28,24 @@ def callback(topic, msg, retained):
 
 
 def ring(reason):
+    global ringing
+    if ringing:
+        return
     if "timeout" in reason:
         print("sounding")
         asyncio.get_event_loop().create_task(sound.ring())
+        ringing = True
     else:
         asyncio.get_event_loop().create_task(sound.siren())
+        ringing = True
 
 
 def stop_alarm():
+    global ringing
     print("Stopping alarm")
     if sound.sounding:
         sound.sound = False
+    ringing = False
 
 
 button.double_func(
