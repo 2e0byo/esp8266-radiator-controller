@@ -157,6 +157,12 @@ async def blink_status():
             await flash("red", 0.1)
 
 
+async def blink_msg():
+    print("Message Recieved")
+    for i in range(3):
+        await flash("green", 0.1)
+
+
 asyncio.get_event_loop().create_task(relay_control())
 asyncio.get_event_loop().create_task(sync_clock())
 asyncio.get_event_loop().create_task(check_schedules())
