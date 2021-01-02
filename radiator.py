@@ -11,6 +11,8 @@ days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 status = []
 
+thermostat_on = False
+
 
 def tuplet_to_day_time(time_tuplet):
     day = days[time_tuplet[3]]
@@ -24,7 +26,7 @@ def time_to_timestamp(time):
 
 
 def automate():
-    global status
+    global status, thermostat_on
     now = rtc.datetime()
     today, time = tuplet_to_day_time(now)
     timestamp = time_to_timestamp(time)
@@ -40,23 +42,22 @@ def automate():
 
     for schedule in thermostat_schedule:
         if today in schedule["days"]:
-            if (
-                timestamp > time_to_timestamp(schedule["on"])
-                and "Thermostat" not in status
-            ):
+            if timestamp > time_to_timestamp(schedule["on"]) and not thermostat_on:
                 status.append("Thermostat")
+                thermostat_on = True
                 asyncio.get_event_loop().create_task(thermostat(schedule["setpoint"]))
-            elif (
-                timestamp > time_to_timestamp(schedule["off"])
-                and "Thermostat" in status
-            ):
+        elif timestamp > time_to_timestamp(schedule["off"]) and thermostat_on:
+            thermostat_on = False
+            try:
                 status.remove("Thermostat")
+            except ValueError:
+                pass
 
 
 async def thermostat(setpoint, hysteresis=1):
     """Try to use radiator as simple thermostat to keep room at constant temperature."""
-    global status
-    while "Thermostat" in status:
+    global status, thermostat_on
+    while thermostat_on:
         _printed = False
         temp = await read_temp()
         while temp >= setpoint:
@@ -70,11 +71,13 @@ async def thermostat(setpoint, hysteresis=1):
             if not _printed:
                 print("Turning heating on")
                 _printed = True
-                status.append("Heating")
-                relay.on()
+                status.append("Thermostat")
             await asyncio.sleep(60)
 
-        status.remove("Heating")
+        try:
+            status.remove("Thermostat")
+        except ValueError:
+            pass
         print("Status:", status)
 
 
@@ -133,14 +136,14 @@ async def toggle_pulse_radiator():
 
 
 def toggle_thermostat():
-    global status
-    if "Thermostat" not in status:
-        status.append("Thermostat")
+    global thermostat_on
+    if not thermostat_on:
+        thermostat_on = True
         print("starting thermostat")
         asyncio.get_event_loop().create_task(thermostat(20))
     else:
         print("stopping thermostat")
-        status.remove("Thermostat")
+        thermostat_on = True
 
     asyncio.get_event_loop().create_task(blink_status())
 
@@ -149,6 +152,9 @@ async def blink_status():
     print("Blinking status", status)
     if "Thermostat" in status:
         await flash("red", 1)
+    if thermostat_on:
+        for i in range(3):
+            await flash("green", 0.1)
     if "Warming" in status or "Manual" in status:
         await flash("green", 1)
 
