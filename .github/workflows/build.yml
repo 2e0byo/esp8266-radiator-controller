@@ -1,0 +1,32 @@
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+name: Build firmware
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - run: ci/setup.sh
+      - run: ci/build.sh
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: firmware-combined.bin
+          path: firmware/firmware-combined.bin
+
+      - uses: actions/setup-node@v2
+        with:
+          cache: 'yarn'
+
+      - run: yarn install
+      - name: Semantic Release
+        run: yarn semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

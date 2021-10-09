@@ -1,5 +1,5 @@
-import uasyncio as asyncio
-from machine import Pin
+import uasyncio as asyncio # noqa
+from machine import Pin # noqa
 from mqtt_as import MQTTClient
 from utime import time
 
@@ -67,10 +67,12 @@ async def conn_han(client):
 async def main(client):
     await client.connect()
     while True:
-        # timeout
-        if last_timestamp and (time() - last_timestamp > 180):
-            ring("timeout")
-        await asyncio.sleep(10)
+        await asyncio.sleep(60)
+    # while True:
+    #     # timeout
+    #     if last_timestamp and (time() - last_timestamp > 1500):
+    #         ring("timeout")
+    #     await asyncio.sleep(10)
 
 
 config["subs_cb"] = callback
