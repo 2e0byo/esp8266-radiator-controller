@@ -12,7 +12,7 @@ NPROC=$(nproc)
 
 $DOCKER make -C mpy-cross -j $NPROC
 $DOCKER make submodules -C ports/esp8266 -j $NPROC
-$DOCKER make axtlc -C ports/esp8266 -j $NPROC
+$DOCKER make axtls -C ports/esp8266 -j $NPROC
 $DOCKER make -C ports/esp8266 -j $NPROC
 
 FIRMWARE=ports/esp8266/build-GENERIC/firmware-combined.bin
