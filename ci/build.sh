@@ -7,6 +7,8 @@ cd firmware/micropython
 
 PWD=$(pwd)
 DOCKER="docker run --rm -v $HOME:$HOME -u $UID -w $PWD larsks/esp-open-sdk"
+echo $DOCKER
+
 NPROC=$(nproc)
 
 $DOCKER make -C mpy-cross -j $NPROC
