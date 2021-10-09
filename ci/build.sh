@@ -1,11 +1,10 @@
-#!/bin/sh
+#!/usr/bin/bash
 set -e
 set +x
 
 echo "Building"
 cd firmware/micropython
 
-PWD=$(pwd)
 DOCKER="docker run --rm -v $HOME:$HOME -u $UID -w $PWD larsks/esp-open-sdk"
 echo $DOCKER
 
