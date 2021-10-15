@@ -18,8 +18,9 @@ class DateTimeMatch:
         "weekday": (24 * 60 * 60, 6),
     }
 
-    def __init__(self, exclude_ranges=None, **kwargs):
+    def __init__(self, exclude_ranges=None, once_off=False **kwargs):
         # exclude_ranges is a list of DateTimeMatch objects in tuples (start, end) and is inclusive
+        self.once_off = once_off
         self._spec = {
             "second": 0,
             "minute": 0,
@@ -98,13 +99,22 @@ class Scheduler:
 
     def _calculate(self):
         now = time.time()
+
         # drop stale reasons to be on
-        self._in_progess = [x for x in self._in_progress if x > now]
+        in_progress = []
+        for rule, elapse in self._in_progress:
+            if elapse < now:
+                if rule.once_off:
+                    self._rules.remove(rule)
+            else:
+                in_progress.append((rule, elapse))
+        self._in_progess = in_progress
+
         # trigger any rule which should run now
         for rule in self._rules:
             start = rule.next_event()
             if abs(start - now) < 10: # allow 10s error: assumes no rules closer than that
-                self._in_progess.append(now+rule.duration)
+                self._in_progess.append((rule, now+rule.duration))
 
         if not self._in_progress:
             self.prop = False
