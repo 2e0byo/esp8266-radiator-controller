@@ -61,6 +61,7 @@ class Scheduler:
     def __init__(
         self, name, on_fn, off_fn, persist=False, outdir=".", logging=True, **kwargs
     ):
+        self._state = None
         self._logger = getLogger(name) if logging else None
         self.outdir = outdir
         self._name = name
@@ -76,7 +77,23 @@ class Scheduler:
         super().__init__(**kwargs)
 
     def __repr__(self):
-        return f"Scheduler(name={self._name}, prop={self._prop}, rules={self._rules}, in_progress={self._in_progress})"
+        return f"Scheduler(name={self._name}, self={self.state}, rules={self._rules}, in_progress={self._in_progress})"
+
+    def _on(self):
+        if self._logger:
+            self._logger.info(f"Turning on, was {self._state}")
+        self._state = True
+        self._on_fn()
+
+    def _off(self):
+        if self._logger:
+            self._logger.info(f"Turning off, was {self._state}")
+        self._state = False
+        self._off_fn()
+
+    @property
+    def state(self):
+        return self._state
 
     @property
     def fn(self):
@@ -134,12 +151,15 @@ class Scheduler:
         # drop stale reasons to be on
         in_progress = []
         for rule, elapse in self._in_progress:
-            if elapse < now:
-                if rule.once_off:
+            if elapse <= now:
+                if not rule:
+                    continue
+                elif rule.once_off:
                     self._rules.remove(rule)
             else:
                 in_progress.append((rule, elapse))
-        self._in_progess = in_progress
+
+        self._in_progress = in_progress
 
         # trigger any rule which should run now
         for rule in self._rules:
@@ -150,11 +170,6 @@ class Scheduler:
                 self._in_progess.append((rule, now + rule.duration))
 
         if not self._in_progress:
-            if self._logger:
-                self._logger.debug(f"Turning Off, was {self._prop}")
-            print(self._obj, self._prop)
-            self._off_fn()
+            self._off()
         else:
-            if self._logger:
-                self._logger.debug(f"Turning On, was {self._prop}")
-            self._on_fn()
+            self._on()
