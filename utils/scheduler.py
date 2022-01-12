@@ -3,11 +3,6 @@ import json
 from logging import getLogger
 
 try:
-    import asyncio
-except:
-    import uasyncio as asyncio
-
-try:
     from primitives.delay_ms import Delay_ms
 except ImportError:
     from unittest.mock import MagicMock
