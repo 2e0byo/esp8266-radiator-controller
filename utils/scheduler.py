@@ -123,9 +123,14 @@ class Scheduler:
         with open(self.fn, "w") as f:
             json.dump(data, f)
 
-    def append(self, d, duration):
-        d.duration = duration * 60
-        self._rules.append(d)
+    def remove(self, rule):
+        self._rules = [x for x in self._rules if repr(x) != repr(rule)]
+        self._in_progress = [x for x in self._in_progress if repr(x[0]) != repr(rule)]
+        self._recalculate()
+
+    def append(self, rule, duration):
+        rule.duration = duration * 60
+        self._rules.append(rule)
         self._recalculate()
 
     def append_once(self, duration):
