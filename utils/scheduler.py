@@ -107,9 +107,10 @@ class Scheduler:
             with open(self.fn) as f:
                 data = json.load(f)
                 for rule in data:
-                    d = DateTimeMatch(**data["args"])
+                    d = DateTimeMatch(**rule["args"])
                     d.duration = rule["duration"]
                     self._rules.append(d)
+            self._recalculate()
         except OSError:
             pass
 
@@ -119,8 +120,8 @@ class Scheduler:
             for d in self._rules
             if not d.once_off
         ]
-        with open(self.fn) as f:
-            f.write(json.dump(data))
+        with open(self.fn, "w") as f:
+            json.dump(data, f)
 
     def append(self, d, duration):
         d.duration = duration * 60
