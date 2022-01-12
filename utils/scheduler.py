@@ -33,13 +33,13 @@ class DateTimeMatch:
         print(self._spec)
         if exclude_ranges:
             raise NotImplementedError("Exclude ranges not yet implemented")
+        self._next_event = None
 
     def __repr__(self):
         spec = ", ".join(f"{k}={v}" for k, v in self._spec.items())
         return f"DateTimeMatch({spec})"
 
-
-    def next_event(self, start=None):
+    def calc_next_event(self, start=None):
         target = start or time.time()
         spec = self._spec
         # calculate minimum distance to next event
@@ -51,7 +51,15 @@ class DateTimeMatch:
             while time.localtime(target)[i] != spec[unit]:
                 target += length
 
+        self._next_event = target
+
         return target
+
+    @property
+    def next_event(self):
+        if not self._next_event:
+            self.calc_next_event()
+        return self._next_event
 
 
 class Scheduler:
@@ -132,7 +140,7 @@ class Scheduler:
 
     def _recalculate(self):
         nearest = [x[1] for x in self._in_progress]
-        nearest += [x.next_event() for x in self._rules]
+        nearest += [x.next_event for x in self._rules]
         nearest = min(nearest)
         diff = nearest - time.time() + 1
         self._timer.stop()
@@ -160,11 +168,12 @@ class Scheduler:
 
         # trigger any rule which should run now
         for rule in self._rules:
-            start = rule.next_event()
+            start = rule.next_event
             if (
                 abs(start - now) < 10
             ):  # allow 10s error: assumes no rules closer than that
                 self._in_progess.append((rule, now + rule.duration))
+                rule.calc_next_event()
 
         if not self._in_progress:
             self._off()
