@@ -31,3 +31,76 @@ def test_weekday(params):
     n = match.next_event(0)
     d = struct_to_dict(localtime(n))
     assert {k: v for k, v in d.items() if k in params} == params
+
+
+class MockHardware:
+    def __init__(self):
+        self.state = False
+
+    def on(self):
+        self.state = True
+
+    def off(self):
+        self.state = False
+
+
+class MockDelay_ms:
+    def __init__(self, delay_ms, fn):
+        self._fn = fn
+        self._durn = delay_ms
+        self.running = True
+
+    def stop(self):
+        self.running = False
+
+    def trigger(self):
+        self.running = True
+
+    def elapse(self):
+        """Manual elapse for testing."""
+        self._fn()
+
+
+@pytest.fixture
+def scheduler(tmp_path):
+    hardware = MockHardware()
+    s = Scheduler(
+        "mock",
+        hardware.on,
+        hardware.off,
+        outdir=str(tmp_path),
+    )
+    s._timer = MockDelay_ms(100, s._calculate)
+    s._timer.stop()
+    yield s, hardware
+
+
+def test_toggle_scheduler(mocker, scheduler):
+    time = mocker.patch("time.time")
+    time.return_value = 0
+    scheduler, hardware = scheduler
+
+    assert not hardware.state
+    scheduler.append_once(10)
+    assert hardware.state
+    assert scheduler._timer.running
+    time.return_value = 600
+    scheduler._timer.elapse()
+    assert not hardware.state
+
+
+def test_multiple_scheduler(mocker, scheduler):
+    time = mocker.patch("time.time")
+    time.return_value = 0
+    scheduler, hardware = scheduler
+
+    assert not hardware.state
+    scheduler.append_once(10)
+    scheduler.append_once(5)
+    assert hardware.state
+    time.return_value = 300
+    scheduler._timer.elapse()
+    assert hardware.state
+    time.return_value = 600
+    scheduler._timer.elapse()
+    assert not hardware.state
