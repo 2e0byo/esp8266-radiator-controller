@@ -143,6 +143,10 @@ class Scheduler:
         self._recalculate()
 
     def _recalculate(self):
+        if not self._in_progress and not self._rules:
+            self._calculate()
+            return
+
         nearest = [x[1] for x in self._in_progress]
         nearest += [x.next_event for x in self._rules]
         nearest = min(nearest)
