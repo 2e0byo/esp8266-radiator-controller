@@ -30,7 +30,6 @@ class DateTimeMatch:
             "hour": 0,
         }
         self._spec.update(kwargs)
-        print(self._spec)
         if exclude_ranges:
             raise NotImplementedError("Exclude ranges not yet implemented")
         self._next_event = None
@@ -47,7 +46,6 @@ class DateTimeMatch:
         for unit, (length, i) in self._UNITS.items():
             if unit not in self._spec:
                 continue
-
             while time.localtime(target)[i] != spec[unit]:
                 target += length
 
