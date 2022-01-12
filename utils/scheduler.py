@@ -38,9 +38,6 @@ class DateTimeMatch:
         spec = ", ".join(f"{k}={v}" for k, v in self._spec.items())
         return f"DateTimeMatch({spec})"
 
-    @classmethod
-    def time_to_dict(cls, t):
-        return dict(zip(DateTimeMatch._UNITS.keys(), t[:7]))
 
     def next_event(self, start=None):
         target = start or time.time()
