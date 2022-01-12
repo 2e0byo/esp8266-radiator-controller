@@ -139,7 +139,7 @@ class Scheduler:
         self._recalculate()
 
     def pop_once(self):
-        self._in_progress = [x for x in self._in_progess if x[0]]
+        self._in_progress = [x for x in self._in_progress if x[0]]
         self._recalculate()
 
     def _recalculate(self):
