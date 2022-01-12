@@ -180,7 +180,7 @@ class Scheduler:
             if (
                 abs(start - now) < 10
             ):  # allow 10s error: assumes no rules closer than that
-                self._in_progess.append((rule, now + rule.duration))
+                self._in_progress.append((rule, now + rule.duration))
                 rule.calc_next_event()
 
         if not self._in_progress:
