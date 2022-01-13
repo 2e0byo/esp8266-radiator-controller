@@ -1,6 +1,7 @@
-import utime
 import sys
+
 import uio
+import utime
 
 CRITICAL = 50
 ERROR = 40
@@ -18,15 +19,8 @@ _level_dict = {
 }
 
 
-_nameToLevel = {v: k for k, v in _level_dict.items()}
-
-
 def addLevelName(level, name):
     _level_dict[level] = name
-
-
-def getLevelName(lvl):
-    return _level_dict[lvl]
 
 
 class Logger:
@@ -35,9 +29,8 @@ class Logger:
 
     def __init__(self, name):
         self.name = name
-        self.handlers = ()
+        self.handlers = None
         self.parent = None
-        self.propagate = True
 
     def _level_str(self, level):
         l = _level_dict.get(level)
@@ -90,7 +83,7 @@ class Logger:
         self.exc(sys.exc_info()[1], msg, *args)
 
     def addHandler(self, hdlr):
-        if self.handlers is ():
+        if self.handlers is None:
             self.handlers = []
         self.handlers.append(hdlr)
 
@@ -150,12 +143,13 @@ def basicConfig(level=INFO, filename=None, stream=None, format=None, style="%"):
 class Handler:
     def __init__(self):
         self.formatter = Formatter()
+        self.level = NOTSET
 
     def setFormatter(self, fmt):
         self.formatter = fmt
 
-    def format(self, record):
-        return self.formatter.format(record)
+    def setLevel(self, level):
+        self.level = level
 
 
 class StreamHandler(Handler):
@@ -165,14 +159,13 @@ class StreamHandler(Handler):
         self.terminator = "\n"
 
     def emit(self, record):
-        self._stream.write(self.formatter.format(record) + self.terminator)
-        self.flush()
+        # hack
+        if record.levelno >= self.level:
+            self._stream.write(self.formatter.format(record) + self.terminator)
+            self.flush()
 
     def flush(self):
-        try:
-            self._stream.flush()
-        except AttributeError:
-            pass
+        """Flush apparently not implemented on esp32."""
 
 
 class FileHandler(StreamHandler):
