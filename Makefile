@@ -1,4 +1,4 @@
-.PHONY: all setup build deploy clean shell local-deploy erase
+.PHONY: all setup build deploy clean shell local-deploy erase provision
 
 PORT = /dev/ttyUSB0
 
@@ -23,4 +23,9 @@ local-deploy:
 	bash ./.local-deploy.sh ${PORT}
 
 erase:
-	esptool.py --port 4{PORT} erase_flash
+	esptool.py --port ${PORT} erase_flash
+
+provision:
+	mpfshell -o ser:${PORT} -n -c "md static; putc secrets.py"
+	echo "when prompted, set up webrepl"
+	mpfshell -o ser:${PORT} -c "repl"
