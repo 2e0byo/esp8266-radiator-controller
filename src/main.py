@@ -6,18 +6,20 @@ connect()
 try:
 
     import logging
+    from log import rotating_handler
 
     logging.basicConfig(
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         level=logging.DEBUG,
     )
     logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
     sh = logging.StreamHandler(stdout)
     sh.setFormatter(
         logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
     )
-    logger.addHandler(sh)
+    logging.root.handlers.clear()
+    logging.root.addHandler(sh)
+    # logger.addHandler(sh)
     logger.debug("Logger initialised")
 
     logger.info("Starting App")
