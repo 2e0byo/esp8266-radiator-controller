@@ -195,13 +195,33 @@ class Buzzer:
                 self._ringing = False
 
 
-radiator = Pin(0, Pin.OUT)
+class NoisyPin(Pin):
+    def __init__(self, *args, led, **kwargs):
+        super().__init__(*args)
+        self._led = led
+
+    async def _flash(self, colour):
+        for _ in range(3):
+            await self._led.flash(colour, 0.1)
+            await asyncio.sleep(0.1)
+
+        await self._led.flash(colour, 0.3)
+
+    def on(self):
+        asyncio.create_task(self._flash(self._led.GREEN))
+        super().on()
+
+    def off(self):
+        asyncio.create_task(self._flash(self._led.RED))
+        super().off()
+
 
 _led1 = Pin(16, Pin.OUT)
 _led2 = Pin(5, Pin.OUT)
 
 _pwm = PWM(_led2)
 led = Led(_pwm, _led1)
+radiator = NoisyPin(0, Pin.OUT, led=led)
 
 _buzzer = PWM(Pin(12))
 buzzer = Buzzer(_buzzer)
