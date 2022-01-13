@@ -195,8 +195,7 @@ class Buzzer:
                 self._ringing = False
 
 
-_relay = Pin(0, Pin.OUT)
-radiator = Radiator(_relay)
+radiator = Pin(0, Pin.OUT)
 
 _led1 = Pin(16, Pin.OUT)
 _led2 = Pin(5, Pin.OUT)
@@ -209,5 +208,4 @@ buzzer = Buzzer(_buzzer)
 
 
 def init(loop):
-    radiator.start(loop)
     buzzer.start(loop)
