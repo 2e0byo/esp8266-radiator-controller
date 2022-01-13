@@ -72,7 +72,7 @@ class Scheduler:
         self._off_fn = off_fn
         self._rules = []
         self._in_progress = []
-        self._timer = Delay_ms(100, self._calculate)
+        self._timer = Delay_ms(duration=100, func=self._calculate)
         self._calculate()
         self._timer.stop()
         if persist:
