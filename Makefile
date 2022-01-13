@@ -1,4 +1,4 @@
-.PHONY: all setup build deploy clean shell local-deploy
+.PHONY: all setup build deploy clean shell local-deploy erase
 
 PORT = /dev/ttyUSB0
 
@@ -21,3 +21,6 @@ shell:
 
 local-deploy:
 	bash ./.local-deploy.sh ${PORT}
+
+erase:
+	esptool.py --port 4{PORT} erase_flash
