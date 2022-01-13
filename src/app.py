@@ -22,11 +22,11 @@ def toggle(state=[]):
     if state:
         scheduler.pop_once()
         state.pop()
-        asyncio.create_task(led.flash(led.RED))
+        asyncio.create_task(buzzer.beep(duration_ms=50))
     else:
         scheduler.append_once(settings.get("radiator-on-time", 45))
         state.append(0)
-        asyncio.create_task(led.flash(led.GREEN))
+        asyncio.create_task(buzzer.beep(duration_ms=50))
 
 
 button.press_func(toggle)
