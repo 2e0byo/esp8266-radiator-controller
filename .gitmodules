@@ -10,3 +10,6 @@
 [submodule "firmware/micropython-async"]
 	path = firmware/micropython-async
 	url = https://github.com/peterhinch/micropython-async
+[submodule "firmware/pycopy-lib"]
+	path = firmware/pycopy-lib
+	url = https://github.com/pfalcon/pycopy-lib
