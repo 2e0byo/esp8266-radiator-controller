@@ -1,4 +1,4 @@
-.PHONY: all setup build deploy clean shell
+.PHONY: all setup build deploy clean shell local-deploy
 
 PORT = /dev/ttyUSB0
 
@@ -18,3 +18,6 @@ deploy:
 
 shell:
 	python -m serial.tools.miniterm --rts 0 --dtr 0 --raw ${PORT} 115200
+
+local-deploy:
+	bash ./.local-deploy.sh ${PORT}
