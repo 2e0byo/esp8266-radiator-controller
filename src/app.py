@@ -13,6 +13,7 @@ scheduler.append(DateTimeMatch(hour=22, minute=30), 60)
 
 from primitives.pushbutton import Pushbutton
 from machine import Pin
+from settings import settings
 
 button = Pushbutton(Pin(2, Pin.IN), suppress=True)
 
@@ -23,7 +24,7 @@ def toggle(state=[]):
         state.pop()
         asyncio.create_task(led.flash(led.RED))
     else:
-        scheduler.append_once(45)
+        scheduler.append_once(settings.get("radiator-on-time", 45))
         state.append(0)
         asyncio.create_task(led.flash(led.GREEN))
 
