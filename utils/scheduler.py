@@ -7,6 +7,7 @@ try:
 except ImportError:
     from unittest.mock import MagicMock
 
+    print("Using mocked timer")
     Delay_ms = MagicMock()
 
 
