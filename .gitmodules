@@ -13,3 +13,6 @@
 [submodule "firmware/pycopy-lib"]
 	path = firmware/pycopy-lib
 	url = https://github.com/pfalcon/pycopy-lib
+[submodule "firmware/packing"]
+	path = firmware/packing
+	url = git@github.com:2e0byo/packing.git
