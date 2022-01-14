@@ -13,9 +13,13 @@ async def catchall(req, resp):
     await resp.send("No such resource")
 
 
+def add_endpoint(base, endpoints):
+    for url, cls in endpoints.items():
+        app.add_resource(cls, f"{base}/{url}")
+
+
 app.add_resource(log.api, "/api/syslog")
-for url, cls in radiator.api.items():
-    app.add_resource(cls, f"/api/radiator/{url}")
+add_endpoint("/api/radiator", radiator.api)
 
 MIMETYPES = {"json": "application/json"}
 
