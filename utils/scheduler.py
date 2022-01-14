@@ -3,6 +3,8 @@ import json
 from logging import getLogger
 from collections import namedtuple
 
+from .utils import convert_vals
+
 try:
     from primitives.delay_ms import Delay_ms
 except ImportError:
@@ -255,9 +257,16 @@ class RulesListAPI:
 
     def post(self, data):
         if not "duration" in data:
-            raise InputError("No Duration")
+            raise ValueError("No Duration")
 
-        if not any(x in data for x in DateTimeMatch._UNITS.keys()):
-            raise InputError("No TimeSpec")
-        rule = DateTimeMatch(**data)
+        timespec = list(DateTimeMatch._UNITS.keys())
+        if not any(x in data for x in timespec):
+            raise ValueError(f"No TimeSpec, should be one or more of {timespec}")
+
+        rule = DateTimeMatch(**{k: convert_vals(v) for k, v in data.items()})
         self._scheduler.append(rule)
+
+
+class RuleAPI:
+    def __init__(self, scheduler):
+        pass
