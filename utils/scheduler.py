@@ -43,6 +43,7 @@ class DateTimeMatch:
         "year": (365 * 24 * 60 * 60, 0),
         "weekday": (24 * 60 * 60, 6),
     }
+    instances = []
 
     def __init__(self, exclude_ranges=None, once_off=False, duration=None, **kwargs):
         # exclude_ranges is a list of DateTimeMatch objects in tuples (start, end) and is inclusive
@@ -57,6 +58,8 @@ class DateTimeMatch:
             raise NotImplementedError("Exclude ranges not yet implemented")
         self._next_event = None
         self.duration = duration
+        self.id = len(self.instances) + 1
+        self.instances.append(self.id)
 
     def to_json(self):
         d = dict(duration=self.duration)
@@ -154,8 +157,9 @@ class Scheduler:
             json.dump(data, f)
 
     def remove(self, rule):
-        self._rules = [x for x in self._rules if repr(x) != repr(rule)]
-        self._in_progress = [x for x in self._in_progress if repr(x[0]) != repr(rule)]
+        _id = rule.id
+        self._rules = [x for x in self._rules if x.id != _id]
+        self._in_progress = [x for x in self._in_progress if x[0].id != _id]
         self._recalculate()
 
     def append(self, rule, duration):
