@@ -103,7 +103,6 @@ class Scheduler:
         self._in_progress = []
         self._timer = Delay_ms(duration=100, func=self._recalculate)
         self._next_wakeup = 0
-        self._calculate()
         self._timer.stop()
         if persist:
             self.load()
@@ -173,28 +172,10 @@ class Scheduler:
         self._recalculate()
 
     def _recalculate(self):
-        if not self._in_progress and not self._rules:
-            self._calculate()
-            return
-
-        nearest = [x[1] for x in self._in_progress]
-        nearest += [x.next_event for x in self._rules]
-        nearest = min(nearest)
-        self._next_wakeup = nearest
-        diff = nearest - time.time() + 1
-        self._timer.stop()
-        if self._logger:
-            self._logger.debug(f"Next wake up in {self.next_wakeup}")
-        self._timer._durn = diff * 1_000
-        self._calculate()
-        self._timer.trigger()
-
-    @property
-    def next_wakeup(self):
-        return TimeDiff(self._next_wakeup - round(time.time()))
-
-    def _calculate(self):
         now = time.time()
+
+        if not self._in_progress and not self._rules:
+            return
 
         # drop stale reasons to be on
         in_progress = []
@@ -204,6 +185,8 @@ class Scheduler:
                     continue
                 elif rule.once_off:
                     self._rules.remove(rule)
+                else:
+                    rule.calc_next_event()
             else:
                 in_progress.append((rule, elapse))
 
@@ -213,12 +196,31 @@ class Scheduler:
         for rule in self._rules:
             start = rule.next_event
             if (
-                abs(start - now) < 10
-            ):  # allow 10s error: assumes no rules closer than that
+                abs(start - now) < 5
+            ):  # allow 5s error: assumes no rules closer than that
                 self._in_progress.append((rule, now + rule.duration))
-                rule.calc_next_event()
+
+        nearest = [x[1] for x in self._in_progress]
+        nearest += [x.next_event for x in self._rules]
+        nearest = min(x for x in nearest if x > now)
+
+        self._next_wakeup = nearest
+        if self._logger:
+            self._logger.debug(f"Next wake up in {self.next_wakeup}")
+
+        diff = nearest - now
+        try:
+            self._timer.stop()
+        except RuntimeError:
+            pass  # already stopped
+        self._timer._durn = diff * 1_000
+        self._timer.trigger()
 
         if not self._in_progress:
             self._off()
         else:
             self._on()
+
+    @property
+    def next_wakeup(self):
+        return TimeDiff(self._next_wakeup - round(time.time()))
