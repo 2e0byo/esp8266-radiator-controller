@@ -11,6 +11,7 @@ from .scheduler import (
     RuleAPI,
     StateAPI,
     NextAPI,
+    OnceoffAPI,
 )
 
 scheduler = Scheduler("radiator", radiator.on, radiator.off, persist=True)
@@ -40,4 +41,5 @@ api = {
     "rules/<rule_id>": RuleAPI(scheduler),
     "state": StateAPI(scheduler),
     "next": NextAPI(scheduler),
+    "once-off": OnceoffAPI(scheduler),
 }

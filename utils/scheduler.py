@@ -316,3 +316,20 @@ class StateAPI(API):
 class NextAPI(API):
     def get(self, data):
         return self._scheduler.next_wakeup.to_json()
+
+
+class OnceoffAPI(API):
+    def post(self, data):
+        try:
+            duration = convert_vals(data["duration"])
+            self._scheduler.append_once(duration)
+            return {"message": "success"}
+        except Exception as e:
+            return {"error": str(e)}, 400
+
+    def delete(self, data):
+        try:
+            self._scheduler.pop_once()
+            return {"message": "success"}
+        except Exception as e:
+            return {"error": str(e)}, 400
