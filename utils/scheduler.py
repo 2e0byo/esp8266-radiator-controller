@@ -278,16 +278,21 @@ class RuleAPI:
 
     def get(self, data, rule_id):
         rule_id = convert_vals(rule_id)
-        rule = next(x for x in self._scheduler.rules if x.id == rule_id)
-        print("returning", rule)
-        return rule.to_json()
 
-    def delete(self, data, rule_id):
         try:
             rule = next(x for x in self._scheduler.rules if x.id == rule_id)
         except StopIteration:
             return {"error": "no such rule"}, 404
-        self._scheduler.remove(rule_id)
+        return rule.to_json()
+
+    def delete(self, data, rule_id):
+        rule_id = convert_vals(rule_id)
+
+        try:
+            rule = next(x for x in self._scheduler.rules if x.id == rule_id)
+        except StopIteration:
+            return {"error": "no such rule"}, 404
+        self._scheduler.remove(rule)
 
         return {"message": "success"}
 
@@ -297,7 +302,7 @@ class StateAPI:
         self._scheduler = scheduler
 
     def get(self, data):
-        return dict(state=scheduler.state)
+        return dict(state=self._scheduler.state)
 
 
 class NextAPI:
