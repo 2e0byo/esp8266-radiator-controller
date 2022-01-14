@@ -266,7 +266,40 @@ class RulesListAPI:
         rule = DateTimeMatch(**{k: convert_vals(v) for k, v in data.items()})
         self._scheduler.append(rule)
 
+        return {"id": rule.id}, 201
+
 
 class RuleAPI:
     def __init__(self, scheduler):
-        pass
+        self._scheduler = scheduler
+
+    def get(self, data, rule_id):
+        rule_id = convert_vals(rule_id)
+        rule = next(x for x in self._scheduler.rules if x.id == rule_id)
+        print("returning", rule)
+        return rule
+
+    def delete(self, data, rule_id):
+        try:
+            rule = next(x for x in self._scheduler.rules if x.id == rule_id)
+        except StopIteration:
+            return {"error": "no such rule"}, 404
+        self._scheduler.remove(rule_id)
+
+        return {"message": "success"}
+
+
+class StateAPI:
+    def __init__(self, scheduler):
+        self._scheduler = scheduler
+
+    def get(self, data):
+        return dict(state=scheduler.state)
+
+
+class NextAPI:
+    def __init__(self, scheduler):
+        self._scheduler = scheduler
+
+    def get(self, data):
+        return dict(next=scheduler.next)

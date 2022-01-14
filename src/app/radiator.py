@@ -4,7 +4,14 @@ from primitives.pushbutton import Pushbutton
 from settings import settings
 
 from .hal import radiator, buzzer, led
-from .scheduler import DateTimeMatch, Scheduler
+from .scheduler import (
+    DateTimeMatch,
+    Scheduler,
+    RulesListAPI,
+    RuleAPI,
+    StateAPI,
+    NextAPI,
+)
 
 scheduler = Scheduler("radiator", radiator.on, radiator.off, persist=True)
 scheduler.append(DateTimeMatch(hour=8), 60)
@@ -26,3 +33,9 @@ def toggle(state=[]):
 
 
 button.press_func(toggle)
+api = {
+    "/radiator/rules": RulesListAPI(scheduler),
+    "/radiator/rules/<rule_id>": RuleAPI(scheduler),
+    "/radiator/state": StateAPI(scheduler),
+    "/radiator/next": NextAPI(scheduler),
+}
