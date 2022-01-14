@@ -1,7 +1,7 @@
-import time
 import json
-from logging import getLogger
+import time
 from collections import namedtuple
+from logging import getLogger
 from sys import print_exception
 
 from utils import convert_vals
