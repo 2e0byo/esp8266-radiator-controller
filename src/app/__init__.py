@@ -27,8 +27,8 @@ logger.info("Everything started")
 
 async def heartbeat():
     while True:
-        print("beep beep")
-        await asyncio.sleep(1)
+        print("beep-beep")
+        await asyncio.sleep(5)
 
 
 asyncio.create_task(heartbeat())
