@@ -74,7 +74,6 @@ class DateTimeMatch:
         target = start or time.time()
         spec = self._spec
         # calculate minimum distance to next event
-        now = target
         for unit, (length, i) in self._UNITS.items():
             if unit not in self._spec:
                 continue
