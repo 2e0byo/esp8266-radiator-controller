@@ -2,6 +2,7 @@ import time
 import json
 from logging import getLogger
 from collections import namedtuple
+from sys import print_exception
 
 from .utils import convert_vals
 
@@ -159,8 +160,10 @@ class Scheduler:
                     d = DateTimeMatch(**rule["args"])
                     self._rules.append(d)
             self._recalculate()
-        except OSError:
-            pass
+        except Exception as e:
+            print_exception(e)
+            if self._logger:
+                self._logger.error(f"Failed to load rules: {e}.")
 
     def save(self):
         data = [d.to_json(id=False) for d in self._rules if not d.once_off]
