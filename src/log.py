@@ -1,8 +1,9 @@
 import logging
-from packing.text import RotatingLog
-from settings import settings
 from sys import stdout
 
+from packing.text import RotatingLog
+
+from settings import settings
 
 rotating_log = RotatingLog(
     "syslog",
