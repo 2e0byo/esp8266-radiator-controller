@@ -296,7 +296,7 @@ class RuleAPI:
         try:
             rule = next(x for x in self._scheduler.rules if x.id == rule_id)
         except StopIteration:
-            return {"error": "no such rule"}, 404
+            return {"error": f"no such rule {rule_id}"}, 404
         return rule.to_json()
 
     def delete(self, data, rule_id):
