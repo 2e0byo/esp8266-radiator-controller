@@ -1,7 +1,7 @@
 import log
 import tinyweb
 
-app = tinyweb.webserver()
+app = tinyweb.webserver(debug=True)
 
 app.add_resource(log.api, "/api/syslog/")
 
