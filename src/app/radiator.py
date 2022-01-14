@@ -3,7 +3,7 @@ from machine import Pin
 from primitives.pushbutton import Pushbutton
 from settings import settings
 
-from .hal import radiator
+from .hal import radiator, buzzer, led
 from .scheduler import DateTimeMatch, Scheduler
 
 scheduler = Scheduler("radiator", radiator.on, radiator.off, persist=True)
