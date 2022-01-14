@@ -69,8 +69,14 @@ class DateTimeMatch:
         for unit, (length, i) in self._UNITS.items():
             if unit not in self._spec:
                 continue
+            attempts = 0
             while time.localtime(target)[i] != spec[unit]:
+                attempts += 1
                 target += length
+                if attempts > 400:
+                    raise RuntimeError(
+                        f"Failed to calculate next event for {self} starting at {start}"
+                    )
 
         self._next_event = target
 
