@@ -1,27 +1,14 @@
 from conman import connect
-from sys import stdout, print_exception
+from sys import print_exception
 
 connect()
 
 try:
 
     import logging
-    from log import rotating_handler
+    import log
 
-    logging.basicConfig(
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        level=logging.DEBUG,
-    )
     logger = logging.getLogger(__name__)
-    sh = logging.StreamHandler(stdout)
-    sh.setFormatter(
-        logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
-    )
-    logging.root.handlers.clear()
-    logging.root.addHandler(sh)
-    # logger.addHandler(sh)
-    logger.debug("Logger initialised")
-
     logger.info("Starting App")
     import app
 
