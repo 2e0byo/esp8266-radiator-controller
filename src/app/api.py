@@ -1,5 +1,6 @@
 import log
 import tinyweb
+import settings
 
 from . import radiator
 
@@ -20,6 +21,7 @@ def add_endpoint(base, endpoints):
 
 app.add_resource(log.api, "/api/syslog")
 add_endpoint("/api/radiator", radiator.api)
+add_endpoint("/api", settings.api)
 
 MIMETYPES = {"json": "application/json"}
 

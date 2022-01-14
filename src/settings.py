@@ -1,4 +1,5 @@
 from json import load, dump
+from utils import convert_vals
 
 
 class Settings:
@@ -31,3 +32,36 @@ class Settings:
 
 
 settings = Settings("settings.json")
+
+
+class SettingsListAPI:
+    def __init__(self, settings):
+        self._settings = settings
+
+    def get(self, data):
+        return settings.settings
+
+
+class SettingsAPI:
+    def __init__(self, settings):
+        self._settings = settings
+
+    def get(self, data, setting):
+        if setting not in self._settings.settings:
+            return {"error": f"No such setting {setting}"}, 400
+
+        return {"value": self._settings.get(setting)}
+
+    def put(self, data, setting):
+        try:
+            val = convert_vals(data["value"])
+            settings.set(setting, val)
+            return {"message": "success"}
+        except Exception as e:
+            return {"error": str(e)}, 400
+
+
+api = {
+    "settings": SettingsListAPI(settings),
+    "settings/<setting>": SettingsAPI(settings),
+}
