@@ -119,6 +119,7 @@ class Scheduler:
         self._timer = Delay_ms(duration=100, func=self._recalculate)
         self._next_wakeup = 0
         self._timer.stop()
+        self.persist = persist
         if persist:
             self.load()
         super().__init__(**kwargs)
@@ -171,12 +172,16 @@ class Scheduler:
         self._rules = [x for x in self._rules if x.id != _id]
         self._in_progress = [x for x in self._in_progress if x[0].id != _id]
         self._recalculate()
+        if self.persist:
+            self.save()
 
     def append(self, rule, duration=None):
         if duration:
             rule.duration = duration * 60
         self._rules.append(rule)
         self._recalculate()
+        if self.persist:
+            self.save()
 
     def append_once(self, duration):
         self._on_fn()

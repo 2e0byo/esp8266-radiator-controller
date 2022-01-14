@@ -14,8 +14,10 @@ from .scheduler import (
 )
 
 scheduler = Scheduler("radiator", radiator.on, radiator.off, persist=True)
-scheduler.append(DateTimeMatch(hour=8), 60)
-scheduler.append(DateTimeMatch(hour=22, minute=30), 60)
+
+if not scheduler.rules:  # first run
+    scheduler.append(DateTimeMatch(hour=8), 60)
+    scheduler.append(DateTimeMatch(hour=22, minute=30), 60)
 
 
 button = Pushbutton(Pin(2, Pin.IN), suppress=True)
