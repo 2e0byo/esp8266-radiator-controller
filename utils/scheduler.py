@@ -233,3 +233,29 @@ class Scheduler:
     @property
     def next_wakeup(self):
         return TimeDiff(self._next_wakeup - round(time.time()))
+
+
+class RulesListAPI:
+    def __init__(self, scheduler):
+        self._scheduler = scheduler
+
+    def get(self, data):
+        yield "["
+
+        started = False
+        for rule in self._scheduler.rules:
+            if started:
+                yield ","
+            yield rule.to_json()
+            started = True
+
+        yield "]"
+
+    def post(self, data):
+        if not "duration" in data:
+            raise InputError("No Duration")
+
+        if not any(x in data for x in DateTimeMatch._UNITS.keys()):
+            raise InputError("No TimeSpec")
+        rule = DateTimeMatch(**data)
+        self._scheduler.append(rule)
