@@ -117,6 +117,10 @@ class Scheduler:
             self.load()
         super().__init__(**kwargs)
 
+    @property
+    def rules(self):
+        return self._rules
+
     def __repr__(self):
         return f"Scheduler(name={self._name}, self={self.state}, rules={self._rules}, in_progress={self._in_progress})"
 
