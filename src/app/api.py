@@ -15,6 +15,6 @@ async def catchall(req, resp):
 
 app.add_resource(log.api, "/api/syslog")
 for url, cls in radiator.api.items():
-    app.add_resource(cls, url)
+    app.add_resource(cls, f"/api/radiator/{url}")
 
 app.run(port=80, loop_forever=False, host="0.0.0.0")

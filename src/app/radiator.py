@@ -34,8 +34,8 @@ def toggle(state=[]):
 
 button.press_func(toggle)
 api = {
-    "/radiator/rules": RulesListAPI(scheduler),
-    "/radiator/rules/<rule_id>": RuleAPI(scheduler),
-    "/radiator/state": StateAPI(scheduler),
-    "/radiator/next": NextAPI(scheduler),
+    "rules": RulesListAPI(scheduler),
+    "rules/<rule_id>": RuleAPI(scheduler),
+    "state": StateAPI(scheduler),
+    "next": NextAPI(scheduler),
 }
