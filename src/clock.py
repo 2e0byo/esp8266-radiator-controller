@@ -52,7 +52,7 @@ async def sync_clock():
                     boot_time = localtime()
             except (OverflowError, OSError) as e:
                 print_exception(e)
-                logger.error(e)
+                logger.error(str(e))
             await asyncio.sleep(300)
         while not clock_syncing:
             await asyncio.sleep(1)
