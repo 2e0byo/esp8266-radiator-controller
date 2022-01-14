@@ -1,3 +1,14 @@
+# [1.1.0](https://github.com/2e0byo/esp8266-radiator-controller/compare/v1.0.0...v1.1.0) (2022-01-14)
+
+
+### Features
+
+* **api:** clock api. ([0db88c1](https://github.com/2e0byo/esp8266-radiator-controller/commit/0db88c1ef42b5f171f5a55bdec3005db69c705c0))
+* **api:** settings api. ([db893ce](https://github.com/2e0byo/esp8266-radiator-controller/commit/db893ce8d95b7142786ceb114a73b8bf1f169154))
+* **scheduler/api:** once off api. ([7d00fe2](https://github.com/2e0byo/esp8266-radiator-controller/commit/7d00fe23f4da5c63dc4115a5ef952ca193b2ed9a))
+* **scheduler:** duration now in minutes and on the rule. ([63ca21e](https://github.com/2e0byo/esp8266-radiator-controller/commit/63ca21e59f4d62f5649f3873a9f832abcb5739a4))
+* **scheduler:** make api more helpful. ([c8af531](https://github.com/2e0byo/esp8266-radiator-controller/commit/c8af5316f46138283938b404b8ad997da1d0fae5))
+
 # 1.0.0 (2022-01-14)
 
 
