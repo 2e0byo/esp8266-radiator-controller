@@ -254,10 +254,12 @@ class Scheduler:
         return TimeDiff(self._next_wakeup - round(time.time()))
 
 
-class RulesListAPI:
+class API:
     def __init__(self, scheduler):
         self._scheduler = scheduler
 
+
+class RulesListAPI(API):
     def get(self, data):
         yield "["
 
@@ -284,10 +286,7 @@ class RulesListAPI:
         return {"id": rule.id}, 201
 
 
-class RuleAPI:
-    def __init__(self, scheduler):
-        self._scheduler = scheduler
-
+class RuleAPI(API):
     def get(self, data, rule_id):
         rule_id = convert_vals(rule_id)
 
@@ -309,17 +308,11 @@ class RuleAPI:
         return {"message": "success"}
 
 
-class StateAPI:
-    def __init__(self, scheduler):
-        self._scheduler = scheduler
-
+class StateAPI(API):
     def get(self, data):
         return dict(state=self._scheduler.state)
 
 
-class NextAPI:
-    def __init__(self, scheduler):
-        self._scheduler = scheduler
-
+class NextAPI(API):
     def get(self, data):
         return self._scheduler.next_wakeup.to_json()
