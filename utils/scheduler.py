@@ -184,9 +184,7 @@ class Scheduler:
         if self.persist:
             self.save()
 
-    def append(self, rule, duration=None):
-        if duration:
-            rule.duration = duration * 60
+    def append(self, rule):
         self._rules.append(rule)
         self._recalculate()
         if self.persist:
@@ -228,7 +226,7 @@ class Scheduler:
             if (
                 abs(start - now) < 5
             ):  # allow 5s error: assumes no rules closer than that
-                self._in_progress.append((rule, now + rule.duration))
+                self._in_progress.append((rule, now + rule.duration * 60))
 
         nearest = [x[1] for x in self._in_progress]
         nearest += [x.next_event for x in self._rules]
