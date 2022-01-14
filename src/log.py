@@ -1,3 +1,4 @@
+import json
 import logging
 from sys import stdout
 
@@ -44,3 +45,25 @@ logging.root.addHandler(rotating_handler)
 
 logger = logging.getLogger(__name__)
 logger.debug("Logger initialised")
+
+
+class API:
+    def __init__(self, rotating_log):
+        self._log = rotating_log
+
+    async def get(self, data):
+        kwargs = {
+            "n": int(data.get("n", 10)),
+            "skip": int(data.get("skip", 0)),
+        }
+        yield "["
+        started = False
+        for i, timestamp, line in self._log.read(**kwargs):
+            if started:
+                yield ","
+            yield json.dumps({"line": line, "timestamp": timestamp, "id": i})
+            started = True
+        yield "]"
+
+
+api = API(rotating_log)
