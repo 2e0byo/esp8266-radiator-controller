@@ -61,7 +61,9 @@ class API:
         for i, timestamp, line in self._log.read(**kwargs):
             if started:
                 yield ","
-            yield json.dumps({"line": line, "timestamp": timestamp, "id": i})
+            yield json.dumps(
+                {"line": line.replace("\n", "\\n"), "timestamp": timestamp, "id": i}
+            )
             started = True
         yield "]"
 
