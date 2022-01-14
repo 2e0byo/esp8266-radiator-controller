@@ -1,45 +1,38 @@
+import uasyncio as asyncio
 from logging import getLogger
 
 logger = getLogger(__name__)
+logger.debug("App booting...")
 
-from .hal import led, buzzer, radiator
+logger.debug("Importing hal")
 from . import hal
 
-from .scheduler import DateTimeMatch, Scheduler
+logger.debug("Importing radiator")
+from . import radiator
 
-scheduler = Scheduler("radiator", radiator.on, radiator.off, persist=True)
-scheduler.append(DateTimeMatch(hour=8), 60)
-scheduler.append(DateTimeMatch(hour=22, minute=30), 60)
-
-from primitives.pushbutton import Pushbutton
-from machine import Pin
-from settings import settings
-
-button = Pushbutton(Pin(2, Pin.IN), suppress=True)
+logger.debug("Importing api")
+from . import api
 
 
-def toggle(state=[]):
-    if state:
-        scheduler.pop_once()
-        state.pop()
-        asyncio.create_task(buzzer.beep(duration_ms=50))
-    else:
-        scheduler.append_once(settings.get("radiator-on-time", 45))
-        state.append(0)
-        asyncio.create_task(buzzer.beep(duration_ms=50))
+def blink_hello():
+    # say hello to the world
+    for _ in range(3):
+        asyncio.run(hal.led.flash(hal.led.RED, 0.2))
+        asyncio.run(hal.led.flash(hal.led.GREEN, 0.2))
 
 
-button.press_func(toggle)
-
-import uasyncio as asyncio
-
-# say hello to the world
-for _ in range(3):
-    asyncio.run(led.flash(led.RED, 0.2))
-    asyncio.run(led.flash(led.GREEN, 0.2))
+blink_hello()
 logger.info("Everything started")
 
-loop = asyncio.get_event_loop()
-hal.init(loop)
 
+async def heartbeat():
+    while True:
+        print("beep beep")
+        await asyncio.sleep(1)
+
+
+asyncio.create_task(heartbeat())
+
+
+loop = asyncio.get_event_loop()
 loop.run_forever()
