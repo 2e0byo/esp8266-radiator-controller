@@ -34,6 +34,9 @@ class TimeDiff:
             if val
         )
 
+    def to_json(self):
+        return json.dumps({k: v for k, v in zip(self.FIELDS, self.diff)})
+
 
 class DateTimeMatch:
     _UNITS = {
@@ -277,7 +280,7 @@ class RuleAPI:
         rule_id = convert_vals(rule_id)
         rule = next(x for x in self._scheduler.rules if x.id == rule_id)
         print("returning", rule)
-        return rule
+        return rule.to_json()
 
     def delete(self, data, rule_id):
         try:
@@ -302,4 +305,4 @@ class NextAPI:
         self._scheduler = scheduler
 
     def get(self, data):
-        return dict(next=scheduler.next)
+        return self._scheduler.next_wakeup.to_json()
