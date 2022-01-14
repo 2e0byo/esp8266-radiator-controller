@@ -61,8 +61,10 @@ class DateTimeMatch:
         self.id = len(self.instances) + 1
         self.instances.append(self.id)
 
-    def to_json(self):
+    def to_json(self, id=True):
         d = dict(duration=self.duration)
+        if id:
+            d["id"] = self.id
         d.update(self._spec)
         return json.dumps(d)
 
@@ -155,7 +157,7 @@ class Scheduler:
             pass
 
     def save(self):
-        data = [d.to_json() for d in self._rules if not d.once_off]
+        data = [d.to_json(id=False) for d in self._rules if not d.once_off]
         with open(self.fn, "w") as f:
             json.dump(data, f)
 
