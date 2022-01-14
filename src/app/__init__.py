@@ -2,10 +2,10 @@ from logging import getLogger
 
 logger = getLogger(__name__)
 
-from hal import led, buzzer, radiator
-import hal
+from .hal import led, buzzer, radiator
+from . import hal
 
-from scheduler import DateTimeMatch, Scheduler
+from .scheduler import DateTimeMatch, Scheduler
 
 scheduler = Scheduler("radiator", radiator.on, radiator.off, persist=True)
 scheduler.append(DateTimeMatch(hour=8), 60)
