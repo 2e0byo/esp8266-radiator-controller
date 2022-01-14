@@ -33,7 +33,7 @@ def clockstr(time=None):
 
 def timestr(t):
     if not t:
-        return "None"
+        return None
     d, rem = divmod(t, 86400)
     h, rem = divmod(rem, 3600)
     m, s = divmod(rem, 60)
@@ -81,3 +81,13 @@ def try_sync_clock():
 
 
 asyncio.create_task(sync_clock())
+
+
+class UptimeAPI:
+    def get(self, data):
+        return {"value": timestr(runtime())}
+
+
+api = {
+    "uptime": UptimeAPI(),
+}
