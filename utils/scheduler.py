@@ -167,8 +167,9 @@ class Scheduler:
         self._in_progress = [x for x in self._in_progress if x[0].id != _id]
         self._recalculate()
 
-    def append(self, rule, duration):
-        rule.duration = duration * 60
+    def append(self, rule, duration=None):
+        if duration:
+            rule.duration = duration * 60
         self._rules.append(rule)
         self._recalculate()
 
