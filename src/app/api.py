@@ -17,4 +17,18 @@ app.add_resource(log.api, "/api/syslog")
 for url, cls in radiator.api.items():
     app.add_resource(cls, f"/api/radiator/{url}")
 
+MIMETYPES = {"json": "application/json"}
+
+
+@app.route("/static/<fn>")
+async def static(req, resp, fn):
+    if ".." in fn:
+        await resp.start_html()
+        await resp.send("Hahaha, very funny.")
+    else:
+        suffix = fn.split(".")[-1]
+        content_type = MIMETYPES.get(suffix, "text/plain")
+        await resp.send_file(f"static/{fn}", content_type=content_type)
+
+
 app.run(port=80, loop_forever=False, host="0.0.0.0")
