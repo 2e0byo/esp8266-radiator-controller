@@ -1,3 +1,5 @@
+import gc
+
 import uasyncio as asyncio
 from logging import getLogger
 
@@ -7,11 +9,17 @@ logger.debug("App booting...")
 logger.debug("Importing hal")
 from . import hal
 
+gc.collect()
+
 logger.debug("Importing radiator")
 from . import radiator
 
+gc.collect()
+
 logger.debug("Importing api")
 from . import api
+
+gc.collect()
 
 
 def blink_hello():
