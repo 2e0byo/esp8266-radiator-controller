@@ -5,7 +5,7 @@
   "author": "John Maximilian <2e0byo@gmail.com>",
   "license": "MIT",
   "private": true,
-  "repository": "git://github.com:2e0byo/esp8266-radiator-controller.git",
+  "repository": "git://github.com/2e0byo/esp8266-radiator-controller.git",
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.0",
     "@semantic-release/git": "^10.0.0",
