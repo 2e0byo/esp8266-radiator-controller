@@ -1,6 +1,7 @@
 import time
 import json
 from logging import getLogger
+from collections import namedtuple
 
 try:
     from primitives.delay_ms import Delay_ms
@@ -9,6 +10,27 @@ except ImportError:
 
     print("Using mocked timer")
     Delay_ms = MagicMock()
+
+
+class TimeDiff:
+    _SECONDS_IN_MINUTE = 60
+    _SECONDS_IN_HOUR = _SECONDS_IN_MINUTE * 60
+    _SECONDS_IN_DAY = _SECONDS_IN_HOUR * 24
+    FIELDS = ("days", "hours", "minutes", "seconds")
+    Timediff = namedtuple("Timediff", FIELDS)
+
+    def __init__(self, seconds):
+        days, seconds = divmod(seconds, _SECONDS_IN_DAY)
+        hours, seconds = divmod(seconds, _SECONDS_IN_HOUR)
+        minutes, seconds = divmod(seconds, _SECONDS_IN_MINUTE)
+        self.diff = Timediff(days, hours, minutes, seconds)
+
+    def __str__(self):  # isn't python fun!
+        return " ".join(
+            f"{val} {fn[:-1 if val==1 else None]}"
+            for val, fn in zip(self.diff, self.FIELDS)
+            if val
+        )
 
 
 class DateTimeMatch:
@@ -154,7 +176,7 @@ class Scheduler:
         diff = nearest - time.time() + 1
         self._timer.stop()
         if self._logger:
-            self._logger.debug(f"Next wake up in {diff} seconds")
+            self._logger.debug(f"Next wake up in {TimeDiff(diff)} seconds")
         self._timer._durn = diff * 1_000
         self._calculate()
         self._timer.trigger()
