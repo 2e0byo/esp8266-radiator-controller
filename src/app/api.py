@@ -18,6 +18,11 @@ async def next(data):
     return {"next-wakeup": radiator.scheduler.next_wakeup}
 
 
+@app.catchall()
+async def catchall(req, resp):
+    resp.code = 404
+    await resp.start_html()
+    await resp.send("No such resource")
 rules_list = scheduler.RulesListAPI(radiator.scheduler)
 app.add_resource(rules_list, "/api/radiator/rules/")
 
