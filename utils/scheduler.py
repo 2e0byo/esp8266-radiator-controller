@@ -20,10 +20,10 @@ class TimeDiff:
     Timediff = namedtuple("Timediff", FIELDS)
 
     def __init__(self, seconds):
-        days, seconds = divmod(seconds, _SECONDS_IN_DAY)
-        hours, seconds = divmod(seconds, _SECONDS_IN_HOUR)
-        minutes, seconds = divmod(seconds, _SECONDS_IN_MINUTE)
-        self.diff = Timediff(days, hours, minutes, seconds)
+        days, seconds = divmod(seconds, self._SECONDS_IN_DAY)
+        hours, seconds = divmod(seconds, self._SECONDS_IN_HOUR)
+        minutes, seconds = divmod(seconds, self._SECONDS_IN_MINUTE)
+        self.diff = self.Timediff(days, hours, minutes, seconds)
 
     def __str__(self):  # isn't python fun!
         return " ".join(
@@ -95,7 +95,8 @@ class Scheduler:
         self._off_fn = off_fn
         self._rules = []
         self._in_progress = []
-        self._timer = Delay_ms(duration=100, func=self._calculate)
+        self._timer = Delay_ms(duration=100, func=self._recalculate)
+        self._next_wakeup = 0
         self._calculate()
         self._timer.stop()
         if persist:
@@ -173,13 +174,18 @@ class Scheduler:
         nearest = [x[1] for x in self._in_progress]
         nearest += [x.next_event for x in self._rules]
         nearest = min(nearest)
+        self._next_wakeup = nearest
         diff = nearest - time.time() + 1
         self._timer.stop()
         if self._logger:
-            self._logger.debug(f"Next wake up in {TimeDiff(diff)} seconds")
+            self._logger.debug(f"Next wake up in {self.next_wakeup}")
         self._timer._durn = diff * 1_000
         self._calculate()
         self._timer.trigger()
+
+    @property
+    def next_wakeup(self):
+        return TimeDiff(self._next_wakeup - round(time.time()))
 
     def _calculate(self):
         now = time.time()
