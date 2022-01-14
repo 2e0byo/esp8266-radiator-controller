@@ -1,18 +1,12 @@
 [submodule "firmware/micropython"]
 	path = firmware/micropython
 	url = https://github.com/micropython/micropython
-[submodule "firmware/micropython-lib"]
-	path = firmware/micropython-lib
-	url = https://github.com/micropython/micropython-lib
 [submodule "firmware/tinyweb"]
 	path = firmware/tinyweb
 	url = https://github.com/belyalov/tinyweb
 [submodule "firmware/micropython-async"]
 	path = firmware/micropython-async
 	url = https://github.com/peterhinch/micropython-async
-[submodule "firmware/pycopy-lib"]
-	path = firmware/pycopy-lib
-	url = https://github.com/pfalcon/pycopy-lib
 [submodule "firmware/packing"]
 	path = firmware/packing
 	url = git@github.com:2e0byo/packing.git
