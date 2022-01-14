@@ -68,7 +68,7 @@ class DateTimeMatch:
         self.instances.append(self.id)
 
     def to_json(self, id=True):
-        d = dict(duration=self.duration)
+        d = dict(duration=self.duration, once_off=self.once_off)
         if id:
             d["id"] = self.id
         d.update(self._spec)
