@@ -26,6 +26,6 @@ erase:
 	esptool.py --port ${PORT} erase_flash
 
 provision:
-	mpfshell -o ser:${PORT} -n -c "md static; putc secrets.py"
+	mpfshell -o ser:${PORT} -n -c "md static; md app; putc secrets.py"
 	echo "when prompted, set up webrepl"
 	mpfshell -o ser:${PORT} -c "repl"
