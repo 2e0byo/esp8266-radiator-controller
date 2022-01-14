@@ -18,7 +18,7 @@ async def next(data):
     return {"next-wakeup": radiator.scheduler.next_wakeup}
 
 
-rules_list = scheduler.RulesListApi(radiator.scheduler)
+rules_list = scheduler.RulesListAPI(radiator.scheduler)
 app.add_resource(rules_list, "/api/radiator/rules/")
 
 app.run(port=80, loop_forever=False, host="0.0.0.0")
