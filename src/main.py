@@ -1,6 +1,8 @@
+import gc
 from conman import connect
 from sys import print_exception
 
+gc.enable()
 connect()
 
 try:
@@ -10,6 +12,7 @@ try:
 
     logger = logging.getLogger(__name__)
     logger.info("Starting App")
+    gc.collect()
     import app
 
 except Exception as e:
