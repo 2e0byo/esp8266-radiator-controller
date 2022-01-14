@@ -1,5 +1,5 @@
-import tinyweb
 import log
+import tinyweb
 
 app = tinyweb.webserver()
 
