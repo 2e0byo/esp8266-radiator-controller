@@ -157,7 +157,7 @@ class Scheduler:
             with open(self.fn) as f:
                 data = json.load(f)
                 for rule in data:
-                    d = DateTimeMatch(**rule["args"])
+                    d = DateTimeMatch(**rule)
                     self._rules.append(d)
             self._recalculate()
         except Exception as e:
@@ -166,9 +166,15 @@ class Scheduler:
                 self._logger.error(f"Failed to load rules: {e}.")
 
     def save(self):
-        data = [d.to_json(id=False) for d in self._rules if not d.once_off]
         with open(self.fn, "w") as f:
-            json.dump(data, f)
+            f.write("[")
+            started = False
+            for rule in (d.to_json(id=False) for d in self._rules if not d.once_off):
+                if started:
+                    f.write(",")
+                f.write(rule)
+                started = True
+            f.write("]")
 
     def remove(self, rule):
         _id = rule.id
