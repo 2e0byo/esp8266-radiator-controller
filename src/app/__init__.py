@@ -31,8 +31,5 @@ async def heartbeat():
         await asyncio.sleep(5)
 
 
-asyncio.create_task(heartbeat())
-
-
 loop = asyncio.get_event_loop()
 loop.run_forever()
