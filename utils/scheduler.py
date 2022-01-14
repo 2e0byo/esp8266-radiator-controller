@@ -44,7 +44,7 @@ class DateTimeMatch:
         "weekday": (24 * 60 * 60, 6),
     }
 
-    def __init__(self, exclude_ranges=None, once_off=False, **kwargs):
+    def __init__(self, exclude_ranges=None, once_off=False, duration=None, **kwargs):
         # exclude_ranges is a list of DateTimeMatch objects in tuples (start, end) and is inclusive
         self.once_off = once_off
         self._spec = {
@@ -56,6 +56,12 @@ class DateTimeMatch:
         if exclude_ranges:
             raise NotImplementedError("Exclude ranges not yet implemented")
         self._next_event = None
+        self.duration = duration
+
+    def to_json(self):
+        d = dict(duration=self.duration)
+        d.update(self._spec)
+        return json.dumps(d)
 
     def __repr__(self):
         spec = ", ".join(f"{k}={v}" for k, v in self._spec.items())
@@ -137,18 +143,13 @@ class Scheduler:
                 data = json.load(f)
                 for rule in data:
                     d = DateTimeMatch(**rule["args"])
-                    d.duration = rule["duration"]
                     self._rules.append(d)
             self._recalculate()
         except OSError:
             pass
 
     def save(self):
-        data = [
-            dict(args=d._spec, duration=d.duration)
-            for d in self._rules
-            if not d.once_off
-        ]
+        data = [d.to_json() for d in self._rules if not d.once_off]
         with open(self.fn, "w") as f:
             json.dump(data, f)
 
