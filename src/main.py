@@ -11,6 +11,9 @@ try:
     import log
 
     logger = logging.getLogger(__name__)
+    from clock import try_sync_clock
+
+    try_sync_clock()
     logger.info("Starting App")
     gc.collect()
     import app

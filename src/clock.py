@@ -1,5 +1,5 @@
 import logging
-from time import localtime, mktime
+from time import localtime, mktime, sleep
 from sys import print_exception
 
 import network
@@ -50,8 +50,9 @@ async def sync_clock():
                 rtc.datetime()
                 if not boot_time:
                     boot_time = localtime()
-            except OSError as e:  # errors occasionally
+            except (OverflowError, OSError) as e:
                 print_exception(e)
+                logger.error(e)
             await asyncio.sleep(300)
         while not clock_syncing:
             await asyncio.sleep(1)
@@ -62,5 +63,21 @@ def clock_synced():
     return time[0] != 2000
 
 
-def init(loop):
-    loop.create_task(sync_clock())
+def try_sync_clock():
+    ATTEMPTS = 10
+    logger.debug("Trying to synchronise clock; this may take a while...")
+    for _ in range(ATTEMPTS):
+        try:
+            ntptime.settime()
+        except (OverflowError, OSError) as e:
+            logger.debug(f"Failed to sync, time: {rtc.datetime()}")
+            print_exception(e)
+            sleep(1)
+
+        if clock_synced():
+            return True
+
+    return False
+
+
+asyncio.create_task(sync_clock())
