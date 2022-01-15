@@ -231,7 +231,10 @@ class Scheduler:
             return
 
         # trigger any rule which should run now
+        running = [x[0].id for x in self._in_progress if x[0]]
         for rule in self._rules:
+            if rule.id in running:
+                continue
             start = rule.next_event
             if (
                 abs(start - now) < 5
