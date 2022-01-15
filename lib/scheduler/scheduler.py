@@ -211,9 +211,6 @@ class Scheduler:
     def _recalculate(self):
         now = time.time()
 
-        if not self._in_progress and not self._rules:
-            return
-
         # drop stale reasons to be on
         in_progress = []
         for rule, elapse in self._in_progress:
@@ -228,6 +225,10 @@ class Scheduler:
                 in_progress.append((rule, elapse))
 
         self._in_progress = in_progress
+
+        if not self._in_progress and not self._rules:
+            self._off()
+            return
 
         # trigger any rule which should run now
         for rule in self._rules:
