@@ -4,7 +4,14 @@ from primitives.pushbutton import Pushbutton
 from settings import settings
 
 from .hal import buzzer, led, radiator
-from .scheduler.api import NextAPI, OnceoffAPI, RuleAPI, RulesListAPI, StateAPI
+from .scheduler.api import (
+    NextAPI,
+    OnceoffAPI,
+    RuleAPI,
+    RulesListAPI,
+    StateAPI,
+    JustifyAPI,
+)
 from .scheduler.scheduler import DateTimeMatch, Scheduler
 
 scheduler = Scheduler("radiator", radiator.on, radiator.off, persist=True)
@@ -35,4 +42,5 @@ api = {
     "state": StateAPI(scheduler),
     "next": NextAPI(scheduler),
     "once-off": OnceoffAPI(scheduler),
+    "justify": JustifyAPI(scheduler),
 }

@@ -75,3 +75,8 @@ class OnceoffAPI(API):
             return {"message": "success"}
         except Exception as e:
             return {"error": str(e)}, 400
+
+
+class JustifyAPI(API):
+    def get(self, data):
+        return self._scheduler.justify()
