@@ -79,7 +79,10 @@ class DateTimeMatch:
         return json.dumps(d)
 
     def __repr__(self):
-        spec = ", ".join(f"{k}={v}" for k, v in self._spec.items())
+        things = self._spec
+        things["duration"] = self.duration
+        things["id"] = self.id
+        spec = ", ".join(f"{k}={v}" for k, v in things.items())
         return f"DateTimeMatch({spec})"
 
     def calc_next_event(self, start=None):
