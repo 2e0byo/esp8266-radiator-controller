@@ -4,42 +4,6 @@ import pytest
 from time import localtime, mktime
 
 
-time_candidates = (
-    dict(weekday=3),
-    dict(second=10, minute=15),
-    dict(hour=9, minute=45),
-    dict(year=2099, minute=7),
-    dict(year=2099, weekday=3),
-)
-
-
-def struct_to_dict(tm_struct):
-    mapping = {
-        "tm_year": "year",
-        "tm_mon": "month",
-        "tm_hour": "hour",
-        "tm_min": "minute",
-        "tm_sec": "second",
-        "tm_wday": "weekday",
-    }
-    return {v: getattr(tm_struct, k) for k, v in mapping.items()}
-
-
-@pytest.mark.parametrize("params", time_candidates)
-def test_weekday(params):
-    match = DateTimeMatch(**params)
-    n = match.calc_next_event(0)
-    d = struct_to_dict(localtime(n))
-    assert {k: v for k, v in d.items() if k in params} == params
-
-
-def test_next(mocker):
-    time = mocker.patch("time.time")
-    now = mktime((2000, 1, 1, 0, 0, 0, 0, 1, 0))
-    time.return_value = now
-    match = DateTimeMatch(minute=1)
-    calc_next_event = match.calc_next_event()
-    assert calc_next_event - now == 60
 
 
 class MockHardware:
