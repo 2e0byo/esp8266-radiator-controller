@@ -45,12 +45,7 @@ class RuleAPI(API):
 
     def delete(self, data, rule_id):
         rule_id = convert_vals(rule_id)
-
-        try:
-            rule = next(x for x in self._scheduler.rules if x.id == rule_id)
-        except StopIteration:
-            return {"error": "no such rule"}, 404
-        self._scheduler.remove(rule)
+        self._scheduler.remove_by_id(rule_id)
 
         return {"message": "success"}
 
