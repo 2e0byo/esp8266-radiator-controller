@@ -183,13 +183,15 @@ class Scheduler:
                 started = True
             f.write("]")
 
-    def remove(self, rule):
-        _id = rule.id
+    def remove_by_id(self, _id):
         self._rules = [x for x in self._rules if x.id != _id]
         self._in_progress = [x for x in self._in_progress if x[0].id != _id]
         self._recalculate()
         if self.persist:
             self.save()
+
+    def remove(self, rule):
+        self.remove_by_id(rule.id)
 
     def append(self, rule):
         self._rules.append(rule)
