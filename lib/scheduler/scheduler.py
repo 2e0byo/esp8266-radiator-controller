@@ -38,6 +38,7 @@ class TimeDiff:
             if val
         )
 
+    # micropython has no namedtuple._asdict()
     def to_json(self):
         return json.dumps({k: v for k, v in zip(self.FIELDS, self.diff)})
 
