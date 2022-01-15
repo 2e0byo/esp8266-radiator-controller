@@ -266,3 +266,18 @@ class Scheduler:
     def next_wakeup(self):
         return TimeDiff(self._next_wakeup - round(time.time()))
 
+    def justify(self):
+        # explain why we're on
+        return dict(
+            state=self.state,
+            in_progress=self._in_progress,
+            rules=self._rules,
+            rules_next_events=[
+                str(TimeDiff(x.next_event - time.time())) for x in self._rules
+            ],
+            in_progress_next_events=[
+                str(TimeDiff(x[0].next_event - time.time()))
+                for x in self._in_progress
+                if x[0]
+            ],
+        )
