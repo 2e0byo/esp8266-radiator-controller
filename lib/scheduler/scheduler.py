@@ -2,9 +2,12 @@ import json
 import time
 from collections import namedtuple
 from logging import getLogger
-from sys import print_exception
 
-from utils import convert_vals
+try:
+    from sys import print_exception
+except ImportError:
+    from traceback import print_exception
+
 
 try:
     from primitives.delay_ms import Delay_ms

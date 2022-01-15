@@ -1,5 +1,5 @@
 from json import load, dump
-from utils import convert_vals
+from api_utils import convert_vals
 
 
 class Settings:
