@@ -208,6 +208,12 @@ class Scheduler:
         self._in_progress = [x for x in self._in_progress if x[0]]
         self._recalculate()
 
+    def toggle(self, duration):
+        if any(not x[0] for x in self._in_progress):
+            self.pop_once()
+        else:
+            self.append_once(duration)
+
     def _recalculate(self):
         now = time.time()
 
