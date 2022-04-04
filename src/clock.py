@@ -9,7 +9,7 @@ from machine import RTC
 rtc = RTC()
 rtc.datetime()
 wlan = network.WLAN(network.STA_IF)
-clock_syncing = True
+clock_syncing = False
 
 logger = logging.getLogger(__name__)
 boot_time = None

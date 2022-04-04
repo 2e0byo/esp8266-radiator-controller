@@ -1,6 +1,7 @@
 def connect():
     import secrets
     import network
+    import clock
 
     sta_if = network.WLAN(network.STA_IF)
     if not sta_if.isconnected():
@@ -10,6 +11,7 @@ def connect():
         while not sta_if.isconnected():
             pass
     print("network config:", sta_if.ifconfig())
+    clock.clock_syncing = True
     import logging
 
     logger = logging.getLogger(__name__)
