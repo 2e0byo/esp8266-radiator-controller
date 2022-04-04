@@ -6,7 +6,7 @@ import network
 import uasyncio as asyncio
 from machine import RTC
 
-import urequests as requests
+import uurequests as requests
 
 
 rtc = RTC()
@@ -119,7 +119,7 @@ def try_sync_clock():
 
 
 asyncio.create_task(sync_clock())
-asyncio.create_task(sync_timezone())
+# asyncio.create_task(sync_timezone())
 
 
 class UptimeAPI:
