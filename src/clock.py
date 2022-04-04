@@ -129,7 +129,7 @@ class UptimeAPI:
 
 class TimeAPI:
     def get(self, data):
-        return {"value": timestr(time.localtime())}
+        return {"value": clockstr()}
 
 
 api = {
