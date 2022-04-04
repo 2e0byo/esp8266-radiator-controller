@@ -1,3 +1,28 @@
+# [1.2.0](https://github.com/2e0byo/esp8266-radiator-controller/compare/v1.1.0...v1.2.0) (2022-04-04)
+
+
+### Bug Fixes
+
+* **clock:** fix localtime endpoint. ([905dba8](https://github.com/2e0byo/esp8266-radiator-controller/commit/905dba8f6ce6442429336dc62dd4bb89ec82f438))
+* **clock:** offset in hours! ([46569ac](https://github.com/2e0byo/esp8266-radiator-controller/commit/46569acd41ed74635baab39455dbd25f69d25efb))
+* **clock:** use uurequests, but not in event loop as it dies! ([2ed5d6b](https://github.com/2e0byo/esp8266-radiator-controller/commit/2ed5d6be479ec5e9fcae258eb3a38e92f6ba1370))
+* **scheduler:** avoid appending rule multiple times. ([695ecaa](https://github.com/2e0byo/esp8266-radiator-controller/commit/695ecaa8c1e70ca3674adddb682ee02adb602acd))
+* **scheduler:** handle single once off rules properly. ([0c17a54](https://github.com/2e0byo/esp8266-radiator-controller/commit/0c17a54dbd98f219990e88c951c1a9f30df80be6))
+* **scheduler:** toggle on `Scheduler()` to know state. ([110de06](https://github.com/2e0byo/esp8266-radiator-controller/commit/110de065319c52839766dc0df26eebaf48f54a2a))
+
+
+### Features
+
+* **clock:** localtime endpoint. ([16685f3](https://github.com/2e0byo/esp8266-radiator-controller/commit/16685f32120c00b59e234fe57d40b2512a44f2eb))
+* **clock:** set timezone. ([170b527](https://github.com/2e0byo/esp8266-radiator-controller/commit/170b527d90f8b0be5be7d04f424e9349233e9cf1))
+* **clock:** set uptime on boot. ([006d58c](https://github.com/2e0byo/esp8266-radiator-controller/commit/006d58cb6b31029704c19bdcf20a2d53145f177a))
+* **clock:** start syncing when connected. ([6cb9099](https://github.com/2e0byo/esp8266-radiator-controller/commit/6cb909973e2953aed5caf31ca6ffd4dedc02d479))
+* **scheduler/api:** use remove_by_id. ([4ae66f4](https://github.com/2e0byo/esp8266-radiator-controller/commit/4ae66f43e124a35f096605ba13469f596aae6b12))
+* **scheduler:** better repr. ([a43b601](https://github.com/2e0byo/esp8266-radiator-controller/commit/a43b6016ff3fd559ed46bfeeb2bd2c4be76bdd34))
+* **scheduler:** justify api. ([b5d0127](https://github.com/2e0byo/esp8266-radiator-controller/commit/b5d0127434bcf6d2e81415b73791fda55e96476a))
+* **scheduler:** justify fn. ([e6163bd](https://github.com/2e0byo/esp8266-radiator-controller/commit/e6163bde5bdc2c719fe1e8b0b44e1196411a9f24))
+* **scheduler:** remove_by_id. ([df4b049](https://github.com/2e0byo/esp8266-radiator-controller/commit/df4b0490cd762458a0cc6d7537df7be00fef912b))
+
 # [1.1.0](https://github.com/2e0byo/esp8266-radiator-controller/compare/v1.0.0...v1.1.0) (2022-01-14)
 
 
