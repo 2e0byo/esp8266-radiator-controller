@@ -11,6 +11,11 @@ def connect():
         while not sta_if.isconnected():
             pass
     print("network config:", sta_if.ifconfig())
+    try:
+        clock.set_offset()
+        print("offset set.")
+    except Exception:
+        pass
     clock.clock_syncing = True
     import logging
 
