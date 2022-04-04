@@ -1,6 +1,6 @@
 import logging
-from time import localtime, mktime, sleep
 from sys import print_exception
+import time
 
 import network
 import ntptime
@@ -20,7 +20,7 @@ def runtime():
     if not boot_time:
         return None
     else:
-        return mktime(localtime()) - mktime(boot_time)
+        return time.time() - boot_time
 
 
 def clockstr(time=None):
@@ -49,7 +49,7 @@ async def sync_clock():
                 ntptime.settime()
                 rtc.datetime()
                 if not boot_time:
-                    boot_time = localtime()
+                    boot_time = time.time()
             except (OverflowError, OSError) as e:
                 print_exception(e)
                 logger.error(str(e))
@@ -72,7 +72,7 @@ def try_sync_clock():
         except (OverflowError, OSError) as e:
             logger.debug(f"Failed to sync, time: {rtc.datetime()}")
             print_exception(e)
-            sleep(1)
+            time.sleep(1)
 
         if clock_synced():
             return True
