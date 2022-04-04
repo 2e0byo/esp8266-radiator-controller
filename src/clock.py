@@ -6,6 +6,9 @@ import network
 import uasyncio as asyncio
 from machine import RTC
 
+import urequests as requests
+
+
 rtc = RTC()
 rtc.datetime()
 wlan = network.WLAN(network.STA_IF)
@@ -15,6 +18,20 @@ logger = logging.getLogger(__name__)
 boot_time = None
 
 offset = 0
+
+
+def set_offset():
+    global offset
+    resp = requests.get("https://ifconfig.me")
+    if resp.status_code != 200:
+        raise Exception("Failed to get ip.")
+    ip = resp.text
+    resp = requests.get(f"https://www.timeapi.io/api/Time/current/ip?ipAddress={ip}")
+    if resp.status_code != 200:
+        raise Exception("Failed to get time.")
+    data = resp.json()
+    if data["dstActive"]:
+        offset = 60 * (data["hour"] - time.gmtime()[3])
 
 
 def settime():
@@ -66,6 +83,19 @@ async def sync_clock():
             await asyncio.sleep(1)
 
 
+async def sync_timezone():
+    while True:
+        while clock_syncing:
+            try:
+                set_offset()
+            except Exception as e:
+                print_exception(e)
+                logger.error(str(e))
+            await asyncio.sleep(60 * 60 * 12)
+        while not clock_syncing:
+            await asyncio.sleep(1)
+
+
 def clock_synced():
     time = rtc.datetime()
     return time[0] != 2000
@@ -89,6 +119,7 @@ def try_sync_clock():
 
 
 asyncio.create_task(sync_clock())
+asyncio.create_task(sync_timezone())
 
 
 class UptimeAPI:
