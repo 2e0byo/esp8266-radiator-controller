@@ -37,7 +37,7 @@ def set_offset():
 def settime():
     import ntptime
 
-    t = ntptime.time() + offset
+    t = ntptime.time() + offset * 60
     tm = time.gmtime(t)
     RTC().datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
 
