@@ -127,6 +127,12 @@ class UptimeAPI:
         return {"value": timestr(runtime())}
 
 
+class TimeAPI:
+    def get(self, data):
+        return {"value": timestr(time.localtime())}
+
+
 api = {
     "uptime": UptimeAPI(),
+    "localtime": TimeAPI(),
 }
