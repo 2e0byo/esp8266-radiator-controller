@@ -3,7 +3,6 @@ from sys import print_exception
 import time
 
 import network
-import ntptime
 import uasyncio as asyncio
 from machine import RTC
 
@@ -14,6 +13,16 @@ clock_syncing = True
 
 logger = logging.getLogger(__name__)
 boot_time = None
+
+offset = 0
+
+
+def settime():
+    import ntptime
+
+    t = ntptime.time() + offset
+    tm = time.gmtime(t)
+    RTC().datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
 
 
 def runtime():
@@ -46,8 +55,7 @@ async def sync_clock():
         while clock_syncing:
             await asyncio.sleep(60)
             try:
-                ntptime.settime()
-                rtc.datetime()
+                settime()
                 if not boot_time:
                     boot_time = time.time()
             except (OverflowError, OSError) as e:
@@ -68,7 +76,7 @@ def try_sync_clock():
     logger.debug("Trying to synchronise clock; this may take a while...")
     for _ in range(ATTEMPTS):
         try:
-            ntptime.settime()
+            settime()
         except (OverflowError, OSError) as e:
             logger.debug(f"Failed to sync, time: {rtc.datetime()}")
             print_exception(e)
