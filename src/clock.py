@@ -17,29 +17,43 @@ clock_syncing = False
 logger = logging.getLogger(__name__)
 boot_time = None
 
-offset = 0
+offset_mins = 0
 
 
 def set_offset():
-    global offset
+    global offset_mins
     resp = requests.get("https://ifconfig.me")
     if resp.status_code != 200:
         raise Exception("Failed to get ip.")
     ip = resp.text
+    resp.close()
     resp = requests.get(f"https://www.timeapi.io/api/Time/current/ip?ipAddress={ip}")
     if resp.status_code != 200:
         raise Exception("Failed to get time.")
     data = resp.json()
-    if data["dstActive"]:
-        offset = 60 * (data["hour"] - time.gmtime()[3])
+    resp.close()
+    utc = ntptime.time()
+    tm = time.gmtime()
+    local = time.mktime(
+        (
+            data["year"],
+            data["month"],
+            data["day"],
+            data["hour"],
+            data["minute"],
+            data["seconds"],
+            tm[6],
+            tm[7],
+        )
+    )
+    # granularity for timezones is 15 mins.
+    offset_mins = round((local - utc) / 900) * 15
 
 
 def settime():
-    import ntptime
-
-    t = ntptime.time() + offset * 60
+    t = ntptime.time() + offset_mins * 60
     tm = time.gmtime(t)
-    RTC().datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
+    rtc.datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3], tm[4], tm[5], 0))
 
 
 def runtime():
