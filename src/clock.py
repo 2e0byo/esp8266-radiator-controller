@@ -1,13 +1,12 @@
 import logging
-from sys import print_exception
 import time
+from sys import print_exception
 
 import network
+import ntptime
 import uasyncio as asyncio
-from machine import RTC
-
 import uurequests as requests
-
+from machine import RTC
 
 rtc = RTC()
 rtc.datetime()
