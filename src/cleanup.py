@@ -11,4 +11,8 @@ def cleanup():
             suffix = f.split(".")[-1]
             if suffix in DELETE and not any(x in f for x in PRESERVE):
                 os.remove("/".join((path, f)))
-    os.remove("app")
+    for path in paths:
+        try:
+            os.rmdir(path)
+        except OSError:
+            pass
