@@ -1,3 +1,11 @@
+## [1.2.1](https://github.com/2e0byo/esp8266-radiator-controller/compare/v1.2.0...v1.2.1) (2022-04-09)
+
+
+### Bug Fixes
+
+* **cleanup:** remove empty dirs which otherwise suppress real code! ([79aa296](https://github.com/2e0byo/esp8266-radiator-controller/commit/79aa296a548cc6a8bcfc749dd9a33ebb421b9149))
+* **clock:** work against utc, and handle rounding. ([d2aea99](https://github.com/2e0byo/esp8266-radiator-controller/commit/d2aea990cdbfa7eedf4cc426a87528aeedff9586))
+
 # [1.2.0](https://github.com/2e0byo/esp8266-radiator-controller/compare/v1.1.0...v1.2.0) (2022-04-04)
 
 
