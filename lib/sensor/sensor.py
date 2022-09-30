@@ -60,7 +60,10 @@ class Sensor:
         silent_count = 0
         while True:
             try:
-                self._append_val(await self.read_sensor())
+                res = await self.read_sensor()
+                if res is None:
+                    raise Exception("Sensor returned None")
+                self._append_val(res)
                 silent_count = 0
             except Exception as e:
                 self._log("error", f"Read sensor failed: {str(e)}")
