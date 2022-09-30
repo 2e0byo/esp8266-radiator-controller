@@ -1,9 +1,9 @@
 import clock
 import log
-import tinyweb
 import settings
+import tinyweb
 
-from . import radiator
+from . import graph, radiator
 
 app = tinyweb.webserver(debug=True)
 
@@ -24,6 +24,7 @@ app.add_resource(log.api, "/api/syslog")
 add_endpoint("/api/radiator", radiator.api)
 add_endpoint("/api", settings.api)
 add_endpoint("/api", clock.api)
+add_endpoint("/api", graph.api)
 
 MIMETYPES = {"json": "application/json"}
 
