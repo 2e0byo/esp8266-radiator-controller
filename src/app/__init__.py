@@ -1,7 +1,15 @@
 import gc
+from logging import getLogger
 
 import uasyncio as asyncio
-from logging import getLogger
+
+from . import wdt
+
+
+def _step():
+    wdt.feed()
+    gc.collect()
+
 
 logger = getLogger(__name__)
 logger.debug("App booting...")
@@ -9,17 +17,17 @@ logger.debug("App booting...")
 logger.debug("Importing hal")
 from . import hal
 
-gc.collect()
+_step()
 
 logger.debug("Importing radiator")
 from . import radiator
 
-gc.collect()
+_step()
 
 logger.debug("Importing api")
 from . import api
 
-gc.collect()
+_step()
 
 
 def blink_hello():
@@ -31,13 +39,7 @@ def blink_hello():
 
 blink_hello()
 logger.info("Everything started")
-
-
-async def heartbeat():
-    while True:
-        print("beep-beep")
-        await asyncio.sleep(5)
-
+print(f"WDT validating the state of {len(wdt.state) - 1} processes.")
 
 loop = asyncio.get_event_loop()
 loop.run_forever()
