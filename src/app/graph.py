@@ -12,11 +12,11 @@ from .temperature import sensor
 packer = PackedRotatingLog(
     "temperature",
     "/static/",
-    log_lines=settings.get("temperature-log-size", 1440),
+    log_lines=settings.get("temperature-log-size", 720),
     floats=1,
     ints=0,
     bools=1,
-    keep_logs=settings.get("keep-temperature-logs", 3),
+    keep_logs=settings.get("keep-temperature-logs", 1),
     timestamp=True,
 )
 

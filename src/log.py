@@ -10,7 +10,7 @@ rotating_log = RotatingLog(
     "syslog",
     "static/",
     log_lines=settings.get("syslog_lines", 200),
-    keep_logs=2,
+    keep_logs=settings.get("keep-syslog-logs", 0),
     timestamp=True,
 )
 
