@@ -1,9 +1,9 @@
+from math import pi, sin
+
 import uasyncio as asyncio
+from machine import PWM, Pin
 from primitives.delay_ms import Delay_ms
 from primitives.message import Message
-
-from math import pi, sin
-from machine import PWM, Pin
 
 
 class Led:
@@ -33,7 +33,7 @@ class Led:
         else:
             self.led.duty(1023 - duty)
 
-    async def flash(self, colour=None, duration=1):
+    async def flash(self, colour=None, duration: float = 1):
         gap = duration / 100
         if colour is not None:
             self.set_colour(colour)
