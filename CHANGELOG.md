@@ -1,3 +1,19 @@
+# [1.3.0](https://github.com/2e0byo/esp8266-radiator-controller/compare/v1.2.1...v1.3.0) (2022-11-27)
+
+
+### Bug Fixes
+
+* cleanup. ([6c17ea4](https://github.com/2e0byo/esp8266-radiator-controller/commit/6c17ea451796e829298879b8089f8811398fabaa))
+* save fs space. ([67abf01](https://github.com/2e0byo/esp8266-radiator-controller/commit/67abf01c443df8d3abfefcae52d53e389ad83306))
+* **sensor:** handle implicit bad sensor which returns None. ([9ffec51](https://github.com/2e0byo/esp8266-radiator-controller/commit/9ffec516fe4cda3a429bb2b834156bd26a2dac25))
+
+
+### Features
+
+* graph. ([5c5b1e5](https://github.com/2e0byo/esp8266-radiator-controller/commit/5c5b1e5f1c1f7f453e9690eaa3860fa6da292594))
+* Sensor() class and tests. ([5baa2be](https://github.com/2e0byo/esp8266-radiator-controller/commit/5baa2be26e827019b438cd42a116bf3c6ac683c4))
+* wdt. ([37ab380](https://github.com/2e0byo/esp8266-radiator-controller/commit/37ab3805940a2abe7cf3721cd6fe64886cd24bcc))
+
 ## [1.2.1](https://github.com/2e0byo/esp8266-radiator-controller/compare/v1.2.0...v1.2.1) (2022-04-09)
 
 
